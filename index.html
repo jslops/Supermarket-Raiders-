@@ -1,0 +1,3251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#05070d">
+<title>SUPERMARKET RAIDERS — Missão: Abastecer o PDV</title>
+<style>
+/* ============================================================
+   SUPERMARKET RAIDERS — Estilos
+   Tema arcade neon / supermercado futurista
+   ============================================================ */
+:root{
+  --neon:#00ffc8;
+  --neon2:#ff2d95;
+  --cyan:#1de9ff;
+  --amber:#ffcc00;
+  --red:#ff3b3b;
+  --green:#39ff88;
+  --bg:#05070d;
+  --panel:rgba(6,12,22,.94);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;width:100%;}
+body{
+  background:radial-gradient(circle at 50% 0%, #0e1c2e 0%, #05070d 62%);
+  color:#dff6ff;
+  font-family:"Courier New", ui-monospace, Consolas, monospace;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:none;
+}
+#app{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+#stage{
+  position:relative;
+  width:min(100vw, calc(100vh * 16 / 9));
+  height:min(100vh, calc(100vw * 9 / 16));
+  box-shadow:0 0 60px rgba(0,255,200,.12), 0 0 120px rgba(0,0,0,.9);
+  background:#02040a;
+  overflow:hidden;
+}
+canvas{display:block;width:100%;height:100%;background:#02040a;}
+
+/* ---------- Telas / Overlays ---------- */
+.screen{
+  position:absolute;inset:0;z-index:30;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:18px;overflow-y:auto;
+  background:rgba(2,5,10,.92);
+}
+.screen.active{display:flex;}
+.screen h1{
+  font-size:clamp(20px,4.2vw,40px);
+  letter-spacing:3px;text-align:center;
+  color:var(--neon);
+  text-shadow:0 0 12px rgba(0,255,200,.8), 0 0 30px rgba(0,255,200,.35);
+}
+.screen h2{
+  font-size:clamp(14px,2.6vw,24px);letter-spacing:2px;text-align:center;color:var(--cyan);
+  text-shadow:0 0 10px rgba(29,233,255,.6);
+}
+.screen h3{font-size:clamp(12px,2vw,17px);letter-spacing:1px;color:var(--amber);text-align:center;}
+.screen p{font-size:clamp(11px,1.6vw,14px);line-height:1.55;text-align:center;max-width:760px;color:#a9d6e5;}
+.sub{font-size:clamp(10px,1.5vw,13px);color:#7fa8bb;letter-spacing:2px;text-align:center;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-width:230px;padding:11px 22px;
+  font-family:inherit;font-size:clamp(11px,1.7vw,15px);font-weight:bold;letter-spacing:2px;
+  color:var(--neon);background:rgba(0,255,200,.06);
+  border:2px solid rgba(0,255,200,.55);border-radius:6px;cursor:pointer;
+  transition:all .13s ease;text-transform:uppercase;
+}
+.btn:hover,.btn:focus-visible{
+  background:rgba(0,255,200,.2);color:#fff;
+  box-shadow:0 0 18px rgba(0,255,200,.55);outline:none;transform:translateY(-1px);
+}
+.btn.pink{color:var(--neon2);border-color:rgba(255,45,149,.6);background:rgba(255,45,149,.07);}
+.btn.pink:hover{background:rgba(255,45,149,.22);box-shadow:0 0 18px rgba(255,45,149,.5);}
+.btn.amber{color:var(--amber);border-color:rgba(255,204,0,.6);background:rgba(255,204,0,.07);}
+.btn.amber:hover{background:rgba(255,204,0,.22);box-shadow:0 0 18px rgba(255,204,0,.5);}
+.btn.small{min-width:auto;padding:8px 14px;font-size:11px;}
+.btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.6);}
+.btn:disabled:hover{transform:none;box-shadow:none;background:rgba(0,255,200,.06);color:var(--neon);}
+
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;}
+.col{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;max-width:820px;}
+.panel{
+  background:var(--panel);border:1px solid rgba(29,233,255,.25);border-radius:8px;
+  padding:14px 16px;width:100%;max-width:820px;
+}
+.panel.tight{padding:10px 12px;}
+
+label.field{display:flex;flex-direction:column;gap:5px;width:100%;max-width:420px;font-size:12px;letter-spacing:1px;color:#8fc6dd;}
+input[type=text]{
+  font-family:inherit;font-size:15px;padding:9px 11px;border-radius:5px;
+  background:rgba(0,20,30,.9);border:2px solid rgba(29,233,255,.4);color:#eaffff;outline:none;
+}
+input[type=text]:focus{border-color:var(--neon);box-shadow:0 0 14px rgba(0,255,200,.4);}
+
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th,td{padding:6px 8px;border-bottom:1px solid rgba(29,233,255,.18);text-align:left;}
+th{color:var(--cyan);letter-spacing:1px;font-size:11px;text-transform:uppercase;}
+tr:hover td{background:rgba(29,233,255,.06);}
+.tablewrap{width:100%;max-height:44vh;overflow:auto;border:1px solid rgba(29,233,255,.18);border-radius:6px;}
+
+.bar{width:100%;height:12px;background:rgba(255,255,255,.07);border-radius:6px;overflow:hidden;border:1px solid rgba(29,233,255,.25);}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--neon),var(--cyan));transition:width .5s ease;}
+.bar.pink>i{background:linear-gradient(90deg,var(--neon2),var(--amber));}
+
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;width:100%;}
+.stat{background:rgba(29,233,255,.06);border:1px solid rgba(29,233,255,.2);border-radius:6px;padding:8px 10px;}
+.stat b{display:block;font-size:10px;letter-spacing:1px;color:#7fa8bb;font-weight:normal;text-transform:uppercase;}
+.stat span{font-size:17px;color:var(--neon);}
+
+.toast{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  z-index:25;pointer-events:none;text-align:center;
+  font-size:clamp(16px,3.4vw,32px);font-weight:bold;letter-spacing:3px;
+  opacity:0;transition:opacity .2s ease;
+  text-shadow:0 0 14px currentColor, 0 0 34px currentColor;
+}
+.toast.show{opacity:1;}
+
+/* ---------- Controles Touch ---------- */
+#touch{position:absolute;inset:0;z-index:15;pointer-events:none;display:none;}
+#touch.on{display:block;}
+#stick{
+  position:absolute;left:18px;bottom:18px;width:130px;height:130px;border-radius:50%;
+  border:2px solid rgba(0,255,200,.35);background:rgba(0,255,200,.05);
+  pointer-events:auto;touch-action:none;
+}
+#stickKnob{
+  position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;
+  background:rgba(0,255,200,.28);border:2px solid rgba(0,255,200,.8);
+  box-shadow:0 0 16px rgba(0,255,200,.5);
+}
+#btnFire{
+  position:absolute;right:22px;bottom:34px;width:104px;height:104px;border-radius:50%;
+  font-family:inherit;font-weight:bold;font-size:14px;letter-spacing:1px;
+  color:#fff;background:rgba(255,45,149,.22);border:3px solid rgba(255,45,149,.85);
+  box-shadow:0 0 22px rgba(255,45,149,.5);pointer-events:auto;touch-action:none;
+}
+#btnFire:active{background:rgba(255,45,149,.5);}
+#btnPause{
+  position:absolute;right:10px;top:8px;z-index:16;pointer-events:auto;display:none;
+  padding:6px 10px;font-family:inherit;font-size:11px;color:var(--cyan);
+  background:rgba(0,0,0,.55);border:1px solid rgba(29,233,255,.5);border-radius:5px;
+}
+#btnPause.on{display:block;}
+
+.hint{font-size:11px;color:#6f93a5;letter-spacing:1px;text-align:center;}
+.kbd{
+  display:inline-block;padding:2px 7px;margin:0 2px;border-radius:4px;
+  background:rgba(29,233,255,.12);border:1px solid rgba(29,233,255,.45);color:var(--cyan);font-size:11px;
+}
+.scroll{max-height:46vh;overflow-y:auto;width:100%;max-width:760px;padding-right:6px;}
+.err-item{border-left:3px solid var(--red);padding:8px 12px;margin-bottom:9px;background:rgba(255,59,59,.06);border-radius:0 6px 6px 0;}
+.err-item .q{color:#fff;font-size:13px;margin-bottom:5px;}
+.err-item .a{font-size:12px;color:#ff9b9b;}
+.err-item .b{font-size:12px;color:var(--green);}
+.err-item .e{font-size:11px;color:#9fd0e2;margin-top:4px;font-style:italic;}
+
+/* ---------- Impressão ---------- */
+#printArea{display:none;}
+@media print{
+  body{background:#fff;color:#000;display:block;overflow:visible;}
+  #app{display:none !important;}
+  #printArea{display:block !important;font-family:"Courier New",monospace;padding:22px;color:#000;}
+  #printArea h1{font-size:20px;margin-bottom:4px;color:#000;}
+  #printArea h2{font-size:14px;margin:14px 0 6px;border-bottom:2px solid #000;padding-bottom:3px;color:#000;}
+  #printArea table{width:100%;border-collapse:collapse;font-size:12px;}
+  #printArea th,#printArea td{border:1px solid #444;padding:5px 7px;text-align:left;color:#000;}
+  #printArea .big{font-size:26px;font-weight:bold;margin:8px 0;}
+  @page{margin:14mm;}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="stage">
+    <canvas id="game" width="960" height="540"></canvas>
+
+    <!-- ================= MENU PRINCIPAL ================= -->
+    <div class="screen active" id="scMenu">
+      <h1>SUPERMARKET RAIDERS</h1>
+      <div class="sub">MISSÃO: ABASTECER O PDV</div>
+      <div class="sub" style="color:#5d7f92">UC 8 — Abastecer o ponto de venda de produtos, mercadorias e serviços</div>
+      <div class="col" style="max-width:300px;margin-top:8px">
+        <button class="btn" id="mJogar">▶ JOGAR</button>
+        <button class="btn" id="mContinuar">⏩ CONTINUAR</button>
+        <button class="btn amber" id="mComo">? COMO JOGAR</button>
+        <button class="btn amber" id="mDesempenho">📊 MEU DESEMPENHO</button>
+        <button class="btn pink" id="mProfessor">🎓 MODO PROFESSOR</button>
+        <button class="btn pink" id="mConfig">⚙ CONFIGURAÇÕES</button>
+      </div>
+      <div class="hint" id="menuFooter"></div>
+    </div>
+
+    <!-- ================= PERFIL ================= -->
+    <div class="screen" id="scProfile">
+      <h2>IDENTIFICAÇÃO DO OPERADOR</h2>
+      <p>Seus dados ficam salvos apenas neste navegador. Nada é enviado para a internet.</p>
+      <label class="field">NOME DO ALUNO *
+        <input type="text" id="inpNome" maxlength="40" placeholder="Digite seu nome" autocomplete="off">
+      </label>
+      <label class="field">TURMA (opcional)
+        <input type="text" id="inpTurma" maxlength="30" placeholder="Ex.: APR-2025-1" autocomplete="off">
+      </label>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="pIniciar">INICIAR MISSÃO</button>
+        <button class="btn pink" id="pVoltar">VOLTAR</button>
+      </div>
+      <div class="hint" id="profileMsg"></div>
+    </div>
+
+    <!-- ================= COMO JOGAR ================= -->
+    <div class="screen" id="scComo">
+      <h2>COMO JOGAR</h2>
+      <div class="panel">
+        <div class="statgrid">
+          <div class="stat"><b>Mover</b><span><span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span> / <span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">←</span><span class="kbd">→</span></span></div>
+          <div class="stat"><b>Atirar</b><span><span class="kbd">ESPAÇO</span> / clique</span></div>
+          <div class="stat"><b>Pausar</b><span><span class="kbd">ESC</span> / <span class="kbd">P</span></span></div>
+        </div>
+        <p style="margin-top:12px;text-align:left">
+          <b style="color:var(--neon)">OBJETIVO:</b> Atire na resposta correta.<br>
+          ✔ <b style="color:var(--green)">ACERTOU</b> → pontos, combo, energia e progresso na fase.<br>
+          ✘ <b style="color:var(--red)">ERROU</b> → perde energia. Se a energia zerar, perde uma vida.<br>
+          👾 <b style="color:var(--cyan)">INIMIGOS</b> → destrua-os ou desvie. A colisão causa dano.<br>
+          🎁 <b style="color:var(--amber)">POWER-UPS</b> → colete para ganhar vantagens.<br>
+          💀 <b style="color:var(--neon2)">CHEFES</b> → a cada 2 fases. Só perdem energia com respostas corretas.<br>
+          🏁 Complete os desafios da fase com pelo menos <b>60% de acertos</b> para desbloquear a próxima.
+        </p>
+      </div>
+      <button class="btn" id="cVoltar">VOLTAR AO MENU</button>
+    </div>
+
+    <!-- ================= TUTORIAL ================= -->
+    <div class="screen" id="scTutorial">
+      <h2 id="tutTitle">TUTORIAL</h2>
+      <div class="panel" style="max-width:640px">
+        <p id="tutText" style="font-size:15px;color:#dff6ff;min-height:70px;display:flex;align-items:center;justify-content:center"></p>
+        <div class="bar" style="margin-top:10px"><i id="tutBar" style="width:20%"></i></div>
+      </div>
+      <div class="row">
+        <button class="btn" id="tutNext">PRÓXIMO ▶</button>
+        <button class="btn pink" id="tutSkip">PULAR TUTORIAL</button>
+      </div>
+    </div>
+
+    <!-- ================= DESEMPENHO ================= -->
+    <div class="screen" id="scDesempenho">
+      <h2>MEU DESEMPENHO</h2>
+      <div class="panel" id="desempenhoBody"></div>
+      <div class="row">
+        <button class="btn" id="dRelatorio">🖨 GERAR RELATÓRIO</button>
+        <button class="btn amber" id="dVoltar">VOLTAR</button>
+      </div>
+    </div>
+
+    <!-- ================= REVISÃO DE ERROS ================= -->
+    <div class="screen" id="scRevisao">
+      <h2>REVISAR ERROS</h2>
+      <div class="scroll" id="revisaoBody"></div>
+      <button class="btn" id="rVoltar">VOLTAR</button>
+    </div>
+
+    <!-- ================= FASE CONCLUÍDA ================= -->
+    <div class="screen" id="scFaseConcluida">
+      <h1 id="fcTitulo">FASE CONCLUÍDA!</h1>
+      <div class="panel" id="fcBody"></div>
+      <div class="row">
+        <button class="btn" id="fcProxima">PRÓXIMA FASE ▶</button>
+        <button class="btn amber" id="fcRevisar">REVISAR ERROS</button>
+        <button class="btn pink" id="fcRepetir">REPETIR FASE</button>
+        <button class="btn pink" id="fcMenu">MENU</button>
+      </div>
+    </div>
+
+    <!-- ================= PAUSA ================= -->
+    <div class="screen" id="scPausa">
+      <h1>PAUSADO</h1>
+      <div class="col" style="max-width:300px">
+        <button class="btn" id="paContinuar">▶ CONTINUAR</button>
+        <button class="btn amber" id="paReiniciar">↻ REINICIAR FASE</button>
+        <button class="btn amber" id="paSom">🔊 SOM: ON</button>
+        <button class="btn amber" id="paMusica">🎵 MÚSICA: ON</button>
+        <button class="btn pink" id="paMenu">MENU PRINCIPAL</button>
+      </div>
+    </div>
+
+    <!-- ================= GAME OVER ================= -->
+    <div class="screen" id="scGameOver">
+      <h1 style="color:var(--red);text-shadow:0 0 14px rgba(255,59,59,.9)">MISSÃO FRACASSOU</h1>
+      <div class="panel" id="goBody"></div>
+      <div class="row">
+        <button class="btn" id="goRetry">TENTAR NOVAMENTE</button>
+        <button class="btn amber" id="goDesempenho">VER DESEMPENHO</button>
+        <button class="btn pink" id="goMenu">MENU</button>
+      </div>
+    </div>
+
+    <!-- ================= VITÓRIA ================= -->
+    <div class="screen" id="scVitoria">
+      <h1 style="color:var(--amber);text-shadow:0 0 18px rgba(255,204,0,.9)">MISSÃO CUMPRIDA!</h1>
+      <div class="panel" id="viBody"></div>
+      <div class="row">
+        <button class="btn" id="viRelatorio">🖨 RELATÓRIO</button>
+        <button class="btn amber" id="viDesempenho">DESEMPENHO</button>
+        <button class="btn pink" id="viMenu">MENU</button>
+      </div>
+    </div>
+
+    <!-- ================= CONFIGURAÇÕES ================= -->
+    <div class="screen" id="scConfig">
+      <h2>CONFIGURAÇÕES</h2>
+      <div class="col" style="max-width:420px">
+        <button class="btn amber" id="cfSom">🔊 SOM: ON</button>
+        <button class="btn amber" id="cfMusica">🎵 MÚSICA: ON</button>
+        <button class="btn amber" id="cfEfeitos">✨ EFEITOS: COMPLETOS</button>
+        <button class="btn pink" id="cfReset">⚠ RESETAR PROGRESSO</button>
+        <button class="btn" id="cfVoltar">VOLTAR</button>
+      </div>
+      <div class="hint" id="cfMsg"></div>
+    </div>
+
+    <!-- ================= MODO PROFESSOR ================= -->
+    <div class="screen" id="scProfessor">
+      <h2>🎓 MODO PROFESSOR</h2>
+      <div class="sub">Resultados armazenados neste dispositivo (localStorage)</div>
+      <div class="panel">
+        <div class="statgrid" id="profStats"></div>
+        <div class="tablewrap" style="margin-top:10px">
+          <table id="profTable">
+            <thead><tr>
+              <th>Aluno</th><th>Turma</th><th>Data</th><th>Pontos</th><th>Acerto</th><th>Fases</th><th>Classificação</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" id="prCSV">⬇ EXPORTAR CSV</button>
+        <button class="btn" id="prJSON">⬇ EXPORTAR JSON</button>
+        <button class="btn amber" id="prPrint">🖨 IMPRIMIR</button>
+        <button class="btn pink" id="prLimpar">🗑 LIMPAR RESULTADOS</button>
+        <button class="btn" id="prVoltar">VOLTAR</button>
+      </div>
+      <div class="hint" id="prMsg"></div>
+    </div>
+
+    <!-- Controles touch -->
+    <div id="touch">
+      <div id="stick"><div id="stickKnob"></div></div>
+      <button id="btnFire">FIRE</button>
+    </div>
+    <button id="btnPause">❚❚ PAUSA</button>
+
+    <!-- Toast de feedback -->
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<!-- Área de impressão (relatório) -->
+<div id="printArea"></div>
+
+<script>
+"use strict";
+/* ================================================================
+   SUPERMARKET RAIDERS — MISSÃO: ABASTECER O PDV
+   Jogo arcade pedagógico — UC 8
+   HTML5 + CSS3 + JavaScript ES6+ + Canvas API + Web Audio API + LocalStorage
+   ================================================================ */
+
+/* ================================================================
+   1) CONFIGURAÇÃO GERAL  (ajuste fácil pelo professor/desenvolvedor)
+   ================================================================ */
+const CFG = {
+  W: 960, H: 540,
+
+  // --- Jogador ---
+  playerSpeed: 330,          // velocidade terminal aproximada (px/s)
+  playerAccel: 3000,         // aceleração
+  playerDamping: 9,          // amortecimento exponencial
+  fireDelay: 0.22,           // intervalo entre tiros (s)
+  fireDelayFast: 0.10,       // com power-up "REPOSIÇÃO RÁPIDA"
+  bulletSpeed: 820,
+
+  // --- Vida / Energia ---
+  startLives: 3,
+  maxEnergy: 100,
+  wrongDamage: 22,           // dano por resposta errada
+  enemyDamage: 14,           // dano por colisão com inimigo
+  bossShotDamage: 16,        // dano por projétil do chefe
+  energyRegenOnCorrect: 6,   // energia recuperada por acerto
+
+  // --- Pontuação ---
+  scoreByDifficulty: { facil: 100, medio: 200, dificil: 300 },
+  comboBonus: { 2: 50, 3: 100, 5: 250, 10: 500 },
+
+  // --- Chefe ---
+  bossHP: 5,
+
+  // --- Power-ups ---
+  powerupDropChance: 0.24,
+  powerupDuration: 11,       // segundos (rapid / mult / triple)
+
+  // --- Diversos ---
+  maxParticles: 420,
+  answerMinAccuracy: 60      // % mínima para desbloquear a próxima fase
+};
+
+/* Fases do jogo — cada fase representa um bloco de conteúdo da UC 8 */
+const PHASES = [
+  { n:1, nome:"O ESTOQUE",             sub:"Fundamentos e finalidade do estoque",     qtd:6, boss:null },
+  { n:2, nome:"RECEBIMENTO",           sub:"Recebimento de mercadorias",              qtd:6, boss:"CAOS DO ESTOQUE" },
+  { n:3, nome:"CONFERÊNCIA",           sub:"Conferência de mercadorias",              qtd:6, boss:null },
+  { n:4, nome:"ARMAZENAMENTO",         sub:"Armazenamento e organização do depósito", qtd:6, boss:"RUPTURA TOTAL" },
+  { n:5, nome:"REPOSIÇÃO",             sub:"Abastecimento do ponto de venda",         qtd:6, boss:null },
+  { n:6, nome:"INVENTÁRIO",            sub:"Inventário, perdas e divergências",       qtd:6, boss:"INVENTÁRIO DESCONTROLADO" },
+  { n:7, nome:"PROBLEMAS OPERACIONAIS",sub:"Situações-problema do dia a dia",         qtd:6, boss:null },
+  { n:8, nome:"MISSÃO FINAL",          sub:"Colapso operacional — desafio integrador",qtd:6, boss:"COLAPSO OPERACIONAL" }
+];
+
+/* Dificuldade derivada da fase (progressão pedagógica) */
+function difficultyOfPhase(fase){
+  if (fase <= 2) return "facil";
+  if (fase <= 5) return "medio";
+  return "dificil";
+}
+
+/* Power-ups originais */
+const POWERUPS = [
+  { id:"energy", label:"ESTOQUE EXTRA",     color:"#39ff88", desc:"+35 de energia" },
+  { id:"rapid",  label:"REPOSIÇÃO RÁPIDA",  color:"#ffd400", desc:"Tiro mais rápido" },
+  { id:"shield", label:"INVENTÁRIO",        color:"#4fc3ff", desc:"Protege contra 1 erro" },
+  { id:"mult",   label:"LOGÍSTICA",         color:"#ff7bd5", desc:"Pontos x2" },
+  { id:"triple", label:"SUPPLY BOOST",      color:"#ff9f1c", desc:"Tiro triplo" }
+];
+
+/* ================================================================
+   2) BANCO DE QUESTÕES — 80 questões (10 por fase)
+   Estrutura: { f: fase, p: pergunta, a:[4 alternativas], c: índice correto, e: explicação }
+   ================================================================ */
+const QUESTIONS = [
+/* ---------------- FASE 1 — O ESTOQUE ---------------- */
+{f:1,p:"O que é estoque em um supermercado?",a:[
+ "Apenas os produtos expostos na prateleira",
+ "O conjunto de mercadorias armazenadas e disponíveis para venda",
+ "Somente os produtos que sobraram do mês",
+ "A lista de clientes que frequentam o setor"],c:1,
+ e:"Estoque é o conjunto de mercadorias armazenadas (depósito e área de venda) disponíveis para comercialização."},
+
+{f:1,p:"Qual é a principal finalidade do estoque em um supermercado?",a:[
+ "Aumentar o preço dos produtos",
+ "Garantir que os produtos estejam disponíveis quando o cliente precisar",
+ "Evitar que a loja compre mercadorias",
+ "Ocupar todo o espaço do depósito"],c:1,
+ e:"O estoque existe para garantir disponibilidade de produto ao cliente, no momento em que ele procura."},
+
+{f:1,p:"Por que o controle de estoque é importante para a operação?",a:[
+ "Para evitar qualquer registro de entrada",
+ "Para acompanhar entradas, saídas e a disponibilidade real dos produtos",
+ "Para impedir a reposição das prateleiras",
+ "Para eliminar a etapa de conferência"],c:1,
+ e:"Controlar o estoque permite acompanhar entradas, saídas e a disponibilidade dos produtos, apoiando a tomada de decisão."},
+
+{f:1,p:"O produto está em falta na prateleira, mas o sistema indica que existe no estoque. Esse caso é chamado de:",a:[
+ "Ruptura total de estoque",
+ "Falha de reposição — o produto existe, mas não foi exposto",
+ "Excesso de estoque",
+ "Perda por avaria"],c:1,
+ e:"Quando o produto existe no estoque mas não está na prateleira, temos falha de reposição. Ruptura é quando não há o produto."},
+
+{f:1,p:"O que significa dizer que um produto tem 'disponibilidade' no PDV?",a:[
+ "Que ele está cadastrado no sistema",
+ "Que ele está disponível para o cliente comprar no momento em que procura",
+ "Que ele está no caminhão do fornecedor",
+ "Que ele tem preço promocional"],c:1,
+ e:"Disponibilidade no PDV é o produto estar acessível ao cliente na hora da compra."},
+
+{f:1,p:"O que é estoque físico?",a:[
+ "A quantidade registrada apenas no sistema",
+ "A quantidade real de mercadorias presentes no depósito e na loja",
+ "A quantidade de produtos vendidos no dia",
+ "A quantidade de produtos encomendados ao fornecedor"],c:1,
+ e:"Estoque físico é a quantidade real, contada, presente fisicamente na loja e no depósito."},
+
+{f:1,p:"O que é estoque registrado (ou sistêmico)?",a:[
+ "A quantidade que aparece no sistema de gestão da loja",
+ "A quantidade contada manualmente no depósito",
+ "A quantidade de clientes no setor",
+ "A quantidade de caixas vazias no depósito"],c:0,
+ e:"Estoque registrado é o saldo que consta no sistema de gestão, resultado dos lançamentos de entrada e saída."},
+
+{f:1,p:"Um estoque muito alto (excesso) pode provocar:",a:[
+ "Falta de produtos para o cliente",
+ "Perdas por validade, ocupação de espaço e dinheiro parado",
+ "Aumento automático das vendas",
+ "Redução do trabalho de reposição"],c:1,
+ e:"Excesso de estoque gera dinheiro parado, risco de vencimento, ocupação de espaço e mais perdas."},
+
+{f:1,p:"Um estoque muito baixo pode provocar:",a:[
+ "Ruptura e perda de vendas",
+ "Aumento do lucro da loja",
+ "Melhora na organização do depósito",
+ "Redução das perdas por validade apenas"],c:0,
+ e:"Estoque abaixo do necessário gera ruptura: o cliente não encontra o produto e a loja perde a venda."},
+
+{f:1,p:"Quem é responsável por manter o ponto de venda abastecido?",a:[
+ "Somente o gerente da loja",
+ "Toda a equipe envolvida na operação, cada um em sua função",
+ "Apenas o fornecedor",
+ "Apenas o cliente"],c:1,
+ e:"O abastecimento é resultado do trabalho integrado de recebimento, estocagem, reposição e gestão."},
+
+/* ---------------- FASE 2 — RECEBIMENTO ---------------- */
+{f:2,p:"Qual é uma das primeiras etapas ao receber uma mercadoria?",a:[
+ "Guardar imediatamente no depósito",
+ "Conferir a documentação (nota fiscal) e o pedido antes de dar entrada",
+ "Colocar direto na prateleira de venda",
+ "Assinar o recebimento e conferir depois"],c:1,
+ e:"O recebimento começa pela conferência documental: nota fiscal, pedido e dados do fornecedor."},
+
+{f:2,p:"O que é conferência quantitativa no recebimento?",a:[
+ "Verificar a aparência da embalagem",
+ "Verificar se a quantidade recebida confere com o pedido e a nota fiscal",
+ "Verificar a validade do produto",
+ "Verificar o preço de venda na gôndola"],c:1,
+ e:"Conferência quantitativa é a contagem: a quantidade recebida deve bater com o documento."},
+
+{f:2,p:"O que é conferência qualitativa no recebimento?",a:[
+ "Contar as caixas recebidas",
+ "Verificar condições do produto: avarias, validade, integridade e temperatura",
+ "Verificar o valor total da nota fiscal",
+ "Verificar o nome do motorista da entrega"],c:1,
+ e:"Conferência qualitativa avalia as condições do produto: embalagem, validade, integridade e temperatura."},
+
+{f:2,p:"Você encontra divergência entre a nota fiscal e o produto recebido. O correto é:",a:[
+ "Ignorar e guardar o produto rapidamente",
+ "Registrar a divergência e comunicar o responsável antes de dar entrada",
+ "Devolver toda a entrega sem avisar ninguém",
+ "Corrigir a nota fiscal por conta própria"],c:1,
+ e:"Toda divergência deve ser registrada e comunicada antes de dar entrada, para não contaminar o estoque."},
+
+{f:2,p:"Um produto chegou com a embalagem violada. Qual a ação correta?",a:[
+ "Colocar na prateleira normalmente",
+ "Separar o produto, registrar a ocorrência e comunicar o responsável",
+ "Vender com desconto sem registrar",
+ "Descartar imediatamente sem registro"],c:1,
+ e:"Produto com embalagem violada deve ser separado e registrado, nunca exposto para venda."},
+
+{f:2,p:"Qual documento acompanha a mercadoria e deve ser conferido no recebimento?",a:[
+ "O cartão de crédito do fornecedor",
+ "A nota fiscal",
+ "O manual do funcionário",
+ "A lista de clientes do setor"],c:1,
+ e:"A nota fiscal é o documento que formaliza a entrega e sustenta a conferência e o lançamento no sistema."},
+
+{f:2,p:"A nota fiscal indica 20 caixas, mas chegaram apenas 18. O procedimento correto é:",a:[
+ "Dar entrada de 20 para não atrasar a reposição",
+ "Dar entrada apenas das 18 recebidas e registrar a divergência",
+ "Recusar toda a entrega imediatamente",
+ "Pedir para o motorista trazer as outras depois e dar entrada de 20"],c:1,
+ e:"Deve-se dar entrada somente do que foi efetivamente recebido e registrar a divergência para cobrança."},
+
+{f:2,p:"Por que o recebimento deve ser feito com atenção, mesmo com o caminhão esperando?",a:[
+ "Porque o fornecedor exige formalmente",
+ "Porque erros no recebimento geram prejuízo, divergência de estoque e problemas no PDV",
+ "Porque é uma exigência apenas estética",
+ "Porque o sistema trava quando há pressa"],c:1,
+ e:"Erro no recebimento contamina todo o processo: estoque errado, ruptura, prejuízo financeiro."},
+
+{f:2,p:"Produtos refrigerados devem ter a temperatura verificada:",a:[
+ "Apenas no fechamento do mês",
+ "No momento do recebimento, antes de serem armazenados",
+ "Nunca — é responsabilidade exclusiva do fornecedor",
+ "Somente quando o cliente reclamar"],c:1,
+ e:"A cadeia de frio deve ser verificada no recebimento; produto fora da temperatura pode ser recusado."},
+
+{f:2,p:"Depois de conferir e dar entrada da mercadoria, o próximo passo é:",a:[
+ "Deixar as caixas no corredor de recebimento",
+ "Armazenar corretamente no depósito ou providenciar a reposição na área de venda",
+ "Devolver tudo ao fornecedor",
+ "Levar a mercadoria direto para o caixa"],c:1,
+ e:"Após a entrada, a mercadoria segue para armazenamento adequado ou reposição, conforme o caso."},
+
+/* ---------------- FASE 3 — CONFERÊNCIA ---------------- */
+{f:3,p:"Conferir o pedido com a nota fiscal serve para:",a:[
+ "Aumentar o preço de venda",
+ "Garantir que o que foi pedido é exatamente o que está sendo entregue",
+ "Reduzir o número de funcionários",
+ "Definir a escala de trabalho do setor"],c:1,
+ e:"A conferência pedido x nota fiscal garante que a entrega corresponde ao que foi solicitado."},
+
+{f:3,p:"Na conferência, o código de barras serve para:",a:[
+ "Enfeitar a embalagem do produto",
+ "Identificar o produto e evitar trocas e erros de cadastro",
+ "Definir a data de validade",
+ "Indicar o preço final ao consumidor"],c:1,
+ e:"O código de barras identifica o item com precisão, evitando trocas e erros de lançamento."},
+
+{f:3,p:"Produto com data de validade mais próxima deve ser:",a:[
+ "Colocado à frente, seguindo o critério de primeiro que vence, primeiro que sai",
+ "Colocado no fundo da prateleira",
+ "Descartado imediatamente",
+ "Escondido do cliente"],c:0,
+ e:"O produto que vence primeiro deve sair primeiro, para reduzir perdas por validade."},
+
+{f:3,p:"Uma 'avaria' em mercadoria significa:",a:[
+ "Produto com preço errado no sistema",
+ "Produto danificado, amassado, violado ou impróprio para venda",
+ "Produto com boa saída de vendas",
+ "Produto em promoção"],c:1,
+ e:"Avaria é qualquer dano que comprometa a integridade ou a venda do produto."},
+
+{f:3,p:"Você encontra um produto diferente do que foi pedido. O correto é:",a:[
+ "Aceitar e colocar na prateleira normalmente",
+ "Registrar a divergência e comunicar o responsável",
+ "Vender mais barato para não perder",
+ "Guardar no depósito sem registrar nada"],c:1,
+ e:"Produto diferente do pedido é divergência: deve ser registrado e comunicado ao responsável."},
+
+{f:3,p:"O que é conferência cega?",a:[
+ "Conferir sem olhar para as caixas",
+ "Conferir sem saber previamente a quantidade informada, aumentando a confiabilidade da contagem",
+ "Conferir apenas produtos de limpeza",
+ "Conferir junto com o cliente"],c:1,
+ e:"Na conferência cega o conferente não conhece a quantidade do documento, o que reduz a indução de erro."},
+
+{f:3,p:"Qual informação NÃO é necessária durante a conferência de mercadorias?",a:[
+ "Quantidade recebida",
+ "Descrição do produto",
+ "Nome do cliente que pretende comprar",
+ "Data de validade"],c:2,
+ e:"Dados de clientes não fazem parte da conferência de recebimento de mercadorias."},
+
+{f:3,p:"Embalagem com vazamento deve ser:",a:[
+ "Colocada na prateleira junto com as demais",
+ "Separada e registrada como avaria",
+ "Misturada com as outras para não perder",
+ "Vendida rapidamente com desconto"],c:1,
+ e:"Embalagem com vazamento é avaria: deve ser separada, registrada e tratada conforme o procedimento."},
+
+{f:3,p:"Em relação ao momento, a conferência deve ser feita:",a:[
+ "Depois de guardar tudo no depósito",
+ "Antes de dar entrada no sistema e de armazenar a mercadoria",
+ "Somente quando houver reclamação do cliente",
+ "No fechamento do mês"],c:1,
+ e:"Conferir antes da entrada no sistema evita que erros sejam lançados e contaminem o estoque."},
+
+{f:3,p:"Por que as divergências de conferência devem ser registradas?",a:[
+ "Ajudam a cobrar o fornecedor, corrigir o estoque e melhorar os processos",
+ "Aumentam a burocracia sem nenhum motivo",
+ "São exigidas apenas pelo setor fiscal",
+ "Servem para informar o cliente"],c:0,
+ e:"O registro de divergências protege a loja, embasa cobranças e melhora o controle de estoque."},
+
+/* ---------------- FASE 4 — ARMAZENAMENTO ---------------- */
+{f:4,p:"Qual é o objetivo principal do armazenamento no depósito?",a:[
+ "Guardar produtos de qualquer maneira, aproveitando o espaço",
+ "Conservar os produtos com segurança, organização e fácil acesso",
+ "Ocupar todo o espaço disponível",
+ "Esconder os produtos do cliente"],c:1,
+ e:"Armazenar bem é conservar o produto, garantir segurança e permitir acesso rápido para reposição."},
+
+{f:4,p:"O que significa endereçamento no depósito?",a:[
+ "Anotar o endereço do fornecedor na caixa",
+ "Identificar e organizar cada produto em um local definido e conhecido",
+ "Cadastrar o endereço da loja no sistema",
+ "Registrar o endereço do cliente"],c:1,
+ e:"Endereçamento é definir e identificar o local de cada item, agilizando a localização e o controle."},
+
+{f:4,p:"Produtos pesados devem ser armazenados:",a:[
+ "Nas prateleiras mais altas, para liberar espaço",
+ "Nas prateleiras mais baixas, para evitar acidentes e esforço excessivo",
+ "No corredor de passagem",
+ "Sobre os produtos frágeis"],c:1,
+ e:"Itens pesados ficam nas posições mais baixas por segurança e ergonomia."},
+
+{f:4,p:"Produtos de limpeza devem ser armazenados:",a:[
+ "Junto com os alimentos, para facilitar",
+ "Separados dos alimentos, para evitar contaminação",
+ "Na câmara fria",
+ "Junto com os pães e padaria"],c:1,
+ e:"Produtos químicos devem ficar separados dos alimentos, evitando contaminação e riscos."},
+
+{f:4,p:"No depósito, a regra 'primeiro que vence, primeiro que sai' serve para:",a:[
+ "Reduzir perdas por validade",
+ "Aumentar o preço dos produtos",
+ "Diminuir artificialmente o estoque",
+ "Atrasar a reposição"],c:0,
+ e:"Essa regra garante giro correto e reduz perdas por vencimento."},
+
+{f:4,p:"O corredor de circulação do depósito deve estar:",a:[
+ "Cheio de caixas para aproveitar melhor o espaço",
+ "Livre, garantindo segurança e movimentação de pessoas e equipamentos",
+ "Fechado com fita de isolamento",
+ "Bloqueado por paletes"],c:1,
+ e:"Corredores livres garantem segurança, agilidade e atendimento às normas de circulação."},
+
+{f:4,p:"Os paletes devem ser empilhados:",a:[
+ "De qualquer maneira, quanto mais alto melhor",
+ "Respeitando o limite de altura e a estabilidade da carga",
+ "Sempre acima de três metros",
+ "Sobre produtos frágeis"],c:1,
+ e:"Empilhamento deve respeitar limite de altura e estabilidade, evitando quedas e avarias."},
+
+{f:4,p:"Um produto armazenado em local incorreto causa:",a:[
+ "Nenhum problema para a operação",
+ "Dificuldade de localização, perdas e divergências de estoque",
+ "Aumento automático das vendas",
+ "Melhora na organização do depósito"],c:1,
+ e:"Produto fora do endereço correto gera atraso, perdas e divergência entre físico e sistema."},
+
+{f:4,p:"A limpeza do depósito é importante porque:",a:[
+ "Evita pragas, contaminação e acidentes de trabalho",
+ "Deixa o ambiente apenas mais bonito",
+ "Aumenta o preço dos produtos",
+ "Reduz o número de funcionários necessários"],c:0,
+ e:"Ambiente limpo e organizado evita pragas, contaminação de alimentos e acidentes."},
+
+{f:4,p:"Produtos que exigem refrigeração devem ser armazenados:",a:[
+ "No depósito seco, junto aos demais",
+ "Em câmaras frias ou equipamentos com temperatura controlada e adequada",
+ "Perto dos produtos de limpeza",
+ "Ao lado da porta de entrada, para facilitar"],c:1,
+ e:"A cadeia de frio deve ser mantida com equipamentos e temperaturas adequadas a cada produto."},
+
+/* ---------------- FASE 5 — REPOSIÇÃO ---------------- */
+{f:5,p:"O que é ruptura no ponto de venda?",a:[
+ "Quando o produto está em falta na prateleira para o cliente",
+ "Quando há produtos em excesso na gôndola",
+ "Quando o preço está errado no sistema",
+ "Quando a prateleira está limpa e organizada"],c:0,
+ e:"Ruptura é a ausência do produto no ponto de venda, impedindo a compra pelo cliente."},
+
+{f:5,p:"Reposição é o processo de:",a:[
+ "Retirar produtos da prateleira para o depósito",
+ "Abastecer a prateleira com produtos vindos do estoque",
+ "Trocar os preços dos produtos",
+ "Contar o estoque do depósito"],c:1,
+ e:"Reposição é levar o produto do estoque para a área de venda, mantendo a prateleira abastecida."},
+
+{f:5,p:"Ao repor produtos na prateleira, o critério de validade correto é:",a:[
+ "Colocar os produtos mais novos na frente",
+ "Colocar os que vencem primeiro na frente",
+ "Misturar aleatoriamente os lotes",
+ "Colocar os mais caros na frente"],c:1,
+ e:"O produto com validade mais próxima vai à frente, garantindo giro e reduzindo perdas."},
+
+{f:5,p:"Produto em falta na prateleira, mas disponível no estoque, indica:",a:[
+ "Ruptura total do item",
+ "Falha de reposição",
+ "Erro de cadastro do produto",
+ "Excesso de estoque"],c:1,
+ e:"Se o item existe no estoque mas não na prateleira, a falha é de reposição, não de estoque."},
+
+{f:5,p:"Excesso de produto na prateleira pode causar:",a:[
+ "Dificuldade de manuseio, queda de produtos e perda por validade",
+ "Aumento automático das vendas",
+ "Melhor controle de estoque",
+ "Redução das perdas"],c:0,
+ e:"Prateleira sobrecarregada dificulta o manuseio, derruba produtos e aumenta perdas."},
+
+{f:5,p:"Para que serve uma ponta de gôndola (frente de loja)?",a:[
+ "Guardar o estoque extra do depósito",
+ "Destacar produtos e estimular a venda",
+ "Esconder produtos de baixa saída",
+ "Armazenar produtos vencidos"],c:1,
+ e:"A ponta de gôndola é um espaço de destaque, usado para estimular a venda de itens selecionados."},
+
+{f:5,p:"Ao identificar uma prateleira vazia durante a ronda, o operador deve:",a:[
+ "Ignorar e continuar o trabalho",
+ "Verificar o estoque e providenciar a reposição o quanto antes",
+ "Esperar o cliente reclamar",
+ "Colocar outro produto no lugar para preencher"],c:1,
+ e:"Identificada a falha, verifica-se o estoque e repõe-se rapidamente, evitando ruptura."},
+
+{f:5,p:"A etiqueta de preço na prateleira deve:",a:[
+ "Estar sempre correta, legível e visível, conforme o cadastro do sistema",
+ "Ser colocada em qualquer lugar da gôndola",
+ "Ficar apenas no depósito",
+ "Ser escrita à mão livre pelo repositor"],c:0,
+ e:"Preço correto e visível é obrigação legal e evita conflitos e erros no caixa."},
+
+{f:5,p:"Produtos com boa saída (alta rotação) devem ser:",a:[
+ "Repostos com mais frequência e em maior quantidade",
+ "Repostos com menos frequência",
+ "Retirados da área de venda",
+ "Colocados no fundo da loja"],c:0,
+ e:"Itens de alta rotação precisam de reposição mais frequente para não faltarem."},
+
+{f:5,p:"Repor produtos durante o horário de pico exige:",a:[
+ "Fechar o corredor para os clientes",
+ "Cuidado com a circulação dos clientes, usando carrinhos e caixas de forma segura",
+ "Correr pelo corredor para terminar rápido",
+ "Deixar as caixas no chão do corredor"],c:1,
+ e:"Em horário de pico, a reposição deve respeitar o fluxo de clientes e as normas de segurança."},
+
+/* ---------------- FASE 6 — INVENTÁRIO ---------------- */
+{f:6,p:"O que é inventário em um supermercado?",a:[
+ "A contagem física dos produtos comparada com o estoque do sistema",
+ "A venda de produtos no caixa",
+ "A compra de mercadorias do fornecedor",
+ "A limpeza do depósito"],c:0,
+ e:"Inventário é a contagem física confrontada com o estoque registrado no sistema."},
+
+{f:6,p:"Divergência de inventário ocorre quando:",a:[
+ "O estoque físico é diferente do estoque registrado no sistema",
+ "O preço está correto na gôndola",
+ "O produto está bem exposto na prateleira",
+ "O fornecedor entrega no prazo"],c:0,
+ e:"Divergência é a diferença entre a quantidade contada e a quantidade registrada."},
+
+{f:6,p:"São causas comuns de divergência de inventário:",a:[
+ "Erros de cadastro, avarias não registradas, furtos e falhas no recebimento",
+ "Boa organização do depósito",
+ "Uso correto do sistema de gestão",
+ "Conferência bem executada"],c:0,
+ e:"Falhas de cadastro, avarias, furtos e erros de recebimento são as principais causas de divergência."},
+
+{f:6,p:"Antes de iniciar a contagem do inventário é importante:",a:[
+ "Organizar e identificar os produtos e definir claramente a área a ser contada",
+ "Vender tudo primeiro",
+ "Comprar mais produtos",
+ "Fechar a loja definitivamente"],c:0,
+ e:"Organização e delimitação da área evitam recontagem e erros na contagem."},
+
+{f:6,p:"Contar o mesmo produto duas vezes no inventário pode causar:",a:[
+ "Divergência positiva, com quantidade maior que a real",
+ "Nenhum problema para o resultado",
+ "Redução do estoque físico",
+ "Melhora na acurácia da contagem"],c:0,
+ e:"Contagem duplicada infla o resultado e gera divergência positiva, mascarando perdas."},
+
+{f:6,p:"No contexto do supermercado, perdas incluem:",a:[
+ "Avarias, vencimento, furtos e erros operacionais",
+ "Somente os produtos vendidos",
+ "Somente os produtos comprados",
+ "Apenas produtos em promoção"],c:0,
+ e:"Perdas são quebras, vencimentos, furtos e falhas operacionais que reduzem o estoque sem venda."},
+
+{f:6,p:"Após identificar divergências no inventário, o correto é:",a:[
+ "Ajustar o sistema com base na contagem validada e investigar as causas",
+ "Ignorar as diferenças encontradas",
+ "Ajustar o sistema sem conferir nada",
+ "Responsabilizar um funcionário imediatamente"],c:0,
+ e:"O ajuste deve ser feito após validação da contagem, e as causas precisam ser investigadas."},
+
+{f:6,p:"Produtos vencidos encontrados durante o inventário devem ser:",a:[
+ "Retirados da venda, registrados como perda e destinados corretamente",
+ "Colocados de volta na prateleira",
+ "Vendidos com desconto",
+ "Misturados aos produtos novos"],c:0,
+ e:"Produto vencido é impróprio para consumo: deve ser retirado, registrado e destinado corretamente."},
+
+{f:6,p:"O inventário rotativo (ou parcial) consiste em:",a:[
+ "Contar apenas alguns setores ou grupos de produtos por vez, de forma programada",
+ "Contar a loja inteira uma única vez por ano",
+ "Contar somente o depósito",
+ "Contar apenas os produtos mais caros"],c:0,
+ e:"O inventário rotativo distribui a contagem ao longo do tempo, por setor ou grupo de itens."},
+
+{f:6,p:"O inventário ajuda a gestão porque:",a:[
+ "Fornece dados reais para compras, controle de perdas e tomada de decisão",
+ "Aumenta o preço dos produtos automaticamente",
+ "Reduz o número de clientes na loja",
+ "Diminui a variedade de produtos"],c:0,
+ e:"Com dados reais de estoque, a gestão compra melhor, reduz perdas e decide com segurança."},
+
+/* ---------------- FASE 7 — PROBLEMAS OPERACIONAIS ---------------- */
+{f:7,p:"Você está repondo o setor de bebidas e percebe que o refrigerante está em falta na prateleira, mas o sistema indica 30 unidades no estoque. O que fazer?",a:[
+ "Ignorar, pois o sistema está sempre certo",
+ "Ir ao depósito, localizar o produto, conferir a quantidade física e repor",
+ "Pedir mais ao fornecedor imediatamente",
+ "Colocar outro produto no lugar para preencher o espaço"],c:1,
+ e:"Antes de pedir mais, é preciso localizar o produto e conferir o físico: pode ser falha de reposição ou endereçamento."},
+
+{f:7,p:"Durante o recebimento, você nota que 5 caixas de leite estão com a embalagem estufada. Qual a ação correta?",a:[
+ "Armazenar normalmente, pois a embalagem está fechada",
+ "Recusar ou separar o produto, registrar a ocorrência e comunicar o responsável",
+ "Colocar na câmara fria e vender depois",
+ "Misturar com os produtos bons para não perder"],c:1,
+ e:"Embalagem estufada indica produto deteriorado: deve ser recusado/separado e a ocorrência registrada."},
+
+{f:7,p:"Um produto muito vendido está com excesso de estoque no depósito, ocupando espaço. O que fazer?",a:[
+ "Comprar ainda mais para garantir",
+ "Verificar a demanda, negociar promoção ou ponta de gôndola e ajustar os próximos pedidos",
+ "Descartar o produto",
+ "Esconder o produto no fundo do depósito"],c:1,
+ e:"Excesso de um item de giro exige ação comercial (promoção/destaque) e revisão dos pedidos."},
+
+{f:7,p:"O sistema mostra 100 unidades, mas a contagem física aponta 85. Qual o primeiro passo?",a:[
+ "Ajustar direto no sistema",
+ "Recontar e investigar as possíveis causas antes de ajustar",
+ "Ignorar a diferença",
+ "Informar o cliente sobre a diferença"],c:1,
+ e:"Nunca se ajusta sem recontar e investigar: a diferença pode ter causa identificável."},
+
+{f:7,p:"Você encontra caixas de produto de limpeza armazenadas junto com alimentos. O que fazer?",a:[
+ "Deixar como está, não há problema",
+ "Separar imediatamente os produtos, seguindo as normas de armazenamento",
+ "Vender mais rápido para acabar o estoque",
+ "Colocar tudo em promoção"],c:1,
+ e:"Produtos químicos não podem ficar junto a alimentos: risco de contaminação. Separe imediatamente."},
+
+{f:7,p:"Um produto sem identificação e sem etiqueta é encontrado no depósito. Qual a ação correta?",a:[
+ "Vender pelo preço que parecer razoável",
+ "Identificar o produto, verificar o cadastro e regularizar a identificação antes de expor",
+ "Descartar o produto",
+ "Levar para outro setor e esquecer"],c:1,
+ e:"Produto sem identificação deve ser identificado e regularizado no sistema antes de ir para a venda."},
+
+{f:7,p:"Um produto está cadastrado com o código de barras errado, causando erro no caixa. O que fazer?",a:[
+ "Ignorar, o problema é do caixa",
+ "Comunicar o responsável e corrigir o cadastro do produto no sistema",
+ "Passar o produto manualmente para sempre",
+ "Retirar o produto da loja definitivamente"],c:1,
+ e:"Erro de cadastro deve ser corrigido na origem, no sistema, e não contornado no caixa."},
+
+{f:7,p:"Durante o horário de pico, a prateleira de pães está vazia e o estoque também. O que fazer?",a:[
+ "Informar o responsável, verificar a possibilidade de pedido urgente e sinalizar a falta",
+ "Deixar vazio sem avisar ninguém",
+ "Colocar outro produto no lugar e não registrar",
+ "Fechar o setor de padaria"],c:0,
+ e:"Faltou produto: comunique, busque solução com o responsável e sinalize a ruptura."},
+
+{f:7,p:"Você percebe que as caixas de um palete estão instáveis e podem cair. O que fazer?",a:[
+ "Continuar trabalhando normalmente ao lado",
+ "Interromper a atividade, sinalizar a área e reorganizar o palete com segurança",
+ "Empilhar mais caixas para firmar",
+ "Avisar apenas no fim do expediente"],c:1,
+ e:"Risco de queda é prioridade de segurança: pare, isole a área e reorganize a carga."},
+
+{f:7,p:"Uma entrega chegou com 10 dias de validade restante, mas o padrão da loja aceita no mínimo 30 dias. O que fazer?",a:[
+ "Aceitar e tentar vender rápido",
+ "Registrar a divergência e seguir o procedimento da loja (recusa ou negociação com o fornecedor)",
+ "Esconder a validade para não haver problema",
+ "Colocar na prateleira sem comunicar ninguém"],c:1,
+ e:"Fora do padrão de validade, aplica-se o procedimento: registrar, comunicar e recusar ou negociar."},
+
+/* ---------------- FASE 8 — MISSÃO FINAL ---------------- */
+{f:8,p:"Qual sequência representa corretamente o fluxo da mercadoria na loja?",a:[
+ "Recebimento → conferência → armazenamento → reposição → venda",
+ "Venda → recebimento → conferência → armazenamento",
+ "Reposição → recebimento → venda → conferência",
+ "Armazenamento → venda → recebimento → conferência"],c:0,
+ e:"O fluxo lógico é: receber, conferir, armazenar, repor e vender — cada etapa alimentando a seguinte."},
+
+{f:8,p:"Um produto com boa saída e entrega semanal deve ter seu estoque de segurança calculado para:",a:[
+ "Evitar ruptura entre uma entrega e outra",
+ "Aumentar as perdas por validade",
+ "Ocupar todo o depósito",
+ "Reduzir as vendas do setor"],c:0,
+ e:"O estoque de segurança cobre o consumo durante o intervalo entre entregas, evitando ruptura."},
+
+{f:8,p:"O indicador de ruptura mede:",a:[
+ "A porcentagem de itens que faltaram na prateleira",
+ "O lucro total da loja",
+ "O número de funcionários por turno",
+ "O tempo médio de atendimento no caixa"],c:0,
+ e:"Ruptura mede a indisponibilidade de itens no ponto de venda — um dos principais indicadores de perda de venda."},
+
+{f:8,p:"Após um inventário com divergência negativa alta em um setor, a primeira ação é:",a:[
+ "Investigar as causas (recebimento, avarias, furtos, cadastro) e corrigir os processos",
+ "Ajustar o sistema e não investigar",
+ "Responsabilizar a equipe imediatamente",
+ "Aumentar os preços dos produtos"],c:0,
+ e:"Divergência negativa alta indica falha de processo: é preciso investigar e corrigir a causa raiz."},
+
+{f:8,p:"Uma boa organização do depósito com endereçamento contribui para:",a:[
+ "Reposição mais rápida, menos erros e melhor controle de estoque",
+ "Aumento das perdas por avaria",
+ "Redução das vendas",
+ "Aumento das divergências"],c:0,
+ e:"Endereçamento reduz tempo de busca, erros de separação e divergências de estoque."},
+
+{f:8,p:"O abastecimento do PDV depende de:",a:[
+ "Apenas do operador de caixa",
+ "Integração entre recebimento, estoque, reposição e informação de vendas",
+ "Apenas do fornecedor",
+ "Apenas do cliente"],c:1,
+ e:"O PDV abastecido é resultado da integração de vários processos e setores da loja."},
+
+{f:8,p:"Um produto com alta perda por validade indica que:",a:[
+ "O pedido está acima da demanda ou a rotação na prateleira está incorreta",
+ "O produto é de má qualidade",
+ "O cliente não gosta do produto",
+ "O preço está baixo demais"],c:0,
+ e:"Perda por validade aponta excesso de compra ou falha na rotação (primeiro que vence, primeiro que sai)."},
+
+{f:8,p:"Ao identificar que o estoque de um item essencial está abaixo do mínimo, o correto é:",a:[
+ "Comunicar e providenciar o pedido de reposição de compra o quanto antes",
+ "Esperar zerar completamente",
+ "Reduzir o preço para vender rápido",
+ "Retirar o produto da loja"],c:0,
+ e:"Abaixo do mínimo, o pedido deve ser providenciado de imediato para evitar ruptura."},
+
+{f:8,p:"A principal consequência da ruptura no ponto de venda é:",a:[
+ "Perda de vendas e insatisfação do cliente",
+ "Aumento do lucro da loja",
+ "Melhora da imagem da loja",
+ "Redução das perdas por validade"],c:0,
+ e:"Sem produto na prateleira, a loja perde a venda e prejudica a experiência do cliente."},
+
+{f:8,p:"Um bom operador de abastecimento deve:",a:[
+ "Conhecer os produtos, seguir os procedimentos e comunicar problemas rapidamente",
+ "Trabalhar isolado, sem comunicar nada à equipe",
+ "Fazer apenas o que mandam, sem observar a loja",
+ "Deixar os problemas para o próximo turno"],c:0,
+ e:"Conhecimento do produto, disciplina de processo e comunicação rápida são a base do bom operador."}
+];
+
+/* ================================================================
+   3) UTILITÁRIOS
+   ================================================================ */
+const rand = (a,b)=> a + Math.random()*(b-a);
+const randi = (a,b)=> Math.floor(rand(a,b+1));
+const clamp = (v,a,b)=> v<a?a:(v>b?b:v);
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function aabb(a,b){ return Math.abs(a.x-b.x) < (a.hw+b.hw) && Math.abs(a.y-b.y) < (a.hh+b.hh); }
+function fmtTime(s){ const m=Math.floor(s/60); const r=Math.floor(s%60); return String(m).padStart(2,'0')+":"+String(r).padStart(2,'0'); }
+
+/* ================================================================
+   4) ÁUDIO — Web Audio API (sons sintetizados, sem arquivos externos)
+   ================================================================ */
+const Sound = {
+  ctx:null, master:null, sfxGain:null, musicGain:null,
+  sfxOn:true, musicOn:true, musicTimer:null, step:0, started:false,
+
+  init(){
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    this.ctx = new AC();
+    this.master = this.ctx.createGain(); this.master.gain.value = 0.55;
+    this.master.connect(this.ctx.destination);
+    this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.65;
+    this.sfxGain.connect(this.master);
+    this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = 0.18;
+    this.musicGain.connect(this.master);
+    this.started = true;
+  },
+  resume(){ if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+
+  /* Tom simples com envelope e opcional glide de frequência */
+  tone(freq, dur, type="square", vol=0.25, slideTo=null){
+    if (!this.ctx || !this.sfxOn) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), t + dur);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.sfxGain);
+    o.start(t); o.stop(t + dur + 0.03);
+  },
+
+  /* Ruído branco filtrado para explosões */
+  noise(dur, vol=0.3, freq=900){
+    if (!this.ctx || !this.sfxOn) return;
+    const t = this.ctx.currentTime;
+    const len = Math.floor(this.ctx.sampleRate * dur);
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i=0;i<len;i++) d[i] = (Math.random()*2-1) * (1 - i/len);
+    const src = this.ctx.createBufferSource(); src.buffer = buf;
+    const flt = this.ctx.createBiquadFilter(); flt.type="lowpass"; flt.frequency.value=freq;
+    const g = this.ctx.createGain(); g.gain.value = vol;
+    src.connect(flt); flt.connect(g); g.connect(this.sfxGain);
+    src.start(t);
+  },
+
+  shoot(){ this.tone(880, 0.06, "square", 0.12, 380); },
+  correct(){
+    this.tone(660, 0.08, "square", 0.22);
+    setTimeout(()=>this.tone(880, 0.09, "square", 0.22), 75);
+    setTimeout(()=>this.tone(1320, 0.14, "square", 0.2), 155);
+  },
+  wrong(){
+    this.tone(200, 0.18, "sawtooth", 0.25, 90);
+    setTimeout(()=>this.tone(150, 0.22, "sawtooth", 0.22, 60), 130);
+  },
+  explode(){ this.noise(0.34, 0.32, 1200); this.tone(90, 0.28, "sawtooth", 0.16, 40); },
+  hitEnemy(){ this.tone(300, 0.06, "square", 0.14, 160); },
+  powerup(){
+    this.tone(520, 0.07, "triangle", 0.22);
+    setTimeout(()=>this.tone(780, 0.07, "triangle", 0.22), 65);
+    setTimeout(()=>this.tone(1040, 0.12, "triangle", 0.22), 130);
+  },
+  bossAlarm(){
+    this.tone(180, 0.35, "sawtooth", 0.22, 120);
+    setTimeout(()=>this.tone(180, 0.35, "sawtooth", 0.22, 120), 420);
+  },
+  levelUp(){
+    [523,659,784,1046].forEach((f,i)=> setTimeout(()=> this.tone(f, 0.16, "square", 0.2), i*110));
+  },
+  victory(){
+    [523,659,784,1046,1318].forEach((f,i)=> setTimeout(()=> this.tone(f, 0.22, "square", 0.22), i*140));
+  },
+  defeat(){
+    [440,392,330,262,196].forEach((f,i)=> setTimeout(()=> this.tone(f, 0.28, "sawtooth", 0.22), i*170));
+  },
+
+  /* --- Música: sequenciador simples de 16 passos --- */
+  startMusic(){
+    this.init();
+    if (!this.ctx || !this.musicOn || this.musicTimer) return;
+    this.step = 0;
+    this.musicTimer = setInterval(()=> this.musicTick(), 145);
+  },
+  stopMusic(){
+    if (this.musicTimer){ clearInterval(this.musicTimer); this.musicTimer = null; }
+  },
+  musicTick(){
+    if (!this.ctx || !this.musicOn || !this.musicGain) return;
+    const t = this.ctx.currentTime;
+    const bass = [55,55,82.4,55, 65.4,65.4,98,65.4, 73.4,73.4,110,73.4, 82.4,82.4,98,123.5];
+    const arp  = [440,554,659,554, 523,659,784,659, 587,740,880,740, 659,784,988,784];
+    const i = this.step % 16;
+    // Baixo
+    this._voice(bass[i], 0.14, "sawtooth", 0.5, t);
+    // Arpejo (a cada 2 passos)
+    if (i % 2 === 0) this._voice(arp[i], 0.12, "square", 0.22, t);
+    this.step++;
+  },
+  _voice(freq, dur, type, vol, t){
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.musicGain);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+};
+
+/* ================================================================
+   5) ARMAZENAMENTO — LocalStorage (nada sai do dispositivo)
+   ================================================================ */
+const Store = {
+  K_PROFILE:"supermarketRaidersPlayer",
+  K_PROGRESS:"supermarketRaidersProgress",
+  K_RESULTS:"supermarketRaidersResults",
+  K_SETTINGS:"supermarketRaidersSettings",
+
+  get(key, def){
+    try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : def; }
+    catch(e){ return def; }
+  },
+  set(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* storage cheio/indisponível */ }
+  },
+  remove(key){ try{ localStorage.removeItem(key); }catch(e){} },
+
+  /* --- Perfil --- */
+  getProfile(){ return this.get(this.K_PROFILE, { nome:"", turma:"" }); },
+  setProfile(p){ this.set(this.K_PROFILE, p); },
+
+  /* --- Progresso --- */
+  getProgress(){
+    return this.get(this.K_PROGRESS, {
+      unlocked: 1,                 // quantas fases estão liberadas
+      bestPhase: 1,
+      bestScore: 0,
+      phaseStats: {}               // { "1": {acertos, erros, pontos, tempo, combo}, ... }
+    });
+  },
+  setProgress(p){ this.set(this.K_PROGRESS, p); },
+
+  /* --- Resultados (usados no Modo Professor) --- */
+  getResults(){ return this.get(this.K_RESULTS, []); },
+  addResult(r){
+    const list = this.getResults();
+    list.push(r);
+    // mantém no máximo 500 registros locais
+    if (list.length > 500) list.splice(0, list.length - 500);
+    this.set(this.K_RESULTS, list);
+  },
+  clearResults(){ this.remove(this.K_RESULTS); },
+
+  /* --- Configurações --- */
+  getSettings(){ return this.get(this.K_SETTINGS, { sfx:true, music:true, fx:true, tutorialDone:false }); },
+  setSettings(s){ this.set(this.K_SETTINGS, s); }
+};
+
+/* ================================================================
+   6) ESTADO GLOBAL DO JOGO
+   ================================================================ */
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const game = {
+  state:"menu",            // menu | playing | paused | phasecomplete | gameover | victory
+  phase:1,
+  phaseCfg:PHASES[0],
+  isBossPhase:false,
+  boss:null,
+
+  // Progresso da fase
+  qQueue:[],
+  currentQuestion:null,
+  currentCorrectIndex:0,
+  qState:"idle",           // idle | entering | active | resolved
+  qTotal:6,
+  qAnswered:0,
+  phaseCorrect:0,
+  phaseWrong:0,
+  resolveTimer:0,
+  nextTimer:0,
+
+  // Recursos
+  score:0,
+  combo:0,
+  maxCombo:0,
+  lives:CFG.startLives,
+  energy:CFG.maxEnergy,
+
+  // Estatísticas da partida (sessão)
+  sessionCorrect:0,
+  sessionWrong:0,
+  sessionStart:0,
+  sessionTime:0,
+
+  // Erros da fase para revisão
+  mistakes:[],
+
+  // Outros
+  time:0,
+  feedback:{ text:"", sub:"", color:"#fff", timer:0 },
+  shieldActive:false,
+  enemySpawnTimer:2,
+  powerupTimer:14,
+  shake:0
+};
+
+/* Entidades */
+const player = {
+  x:150, y:300, hw:24, hh:14,
+  vx:0, vy:0, cd:0, invuln:0,
+  rapid:0, mult:0, triple:0,
+  thrust:0
+};
+let bullets = [];
+let enemyBullets = [];
+let enemies = [];
+let pods = [];
+let powerups = [];
+let particles = [];
+
+/* Fundo parallax */
+const bg = { t:0, stars:[], shelves:[] };
+
+/* ================================================================
+   7) INPUT (teclado, mouse, toque)
+   ================================================================ */
+const input = { up:false, down:false, left:false, right:false, fire:false, tx:0, ty:0, useTouch:false };
+
+const KEYMAP = {
+  ArrowUp:"up", ArrowDown:"down", ArrowLeft:"left", ArrowRight:"right",
+  w:"up", s:"down", a:"left", d:"right",
+  W:"up", S:"down", A:"left", D:"right"
+};
+
+window.addEventListener("keydown", e=>{
+  Sound.init(); Sound.resume();
+  const k = e.key;
+  if (KEYMAP[k]){ input[KEYMAP[k]] = true; e.preventDefault(); }
+  if (k === " " || k === "Spacebar"){ input.fire = true; e.preventDefault(); }
+  if (k === "Escape" || k === "p" || k === "P"){
+    if (game.state === "playing") pauseGame();
+    else if (game.state === "paused") resumeGame();
+    e.preventDefault();
+  }
+});
+window.addEventListener("keyup", e=>{
+  const k = e.key;
+  if (KEYMAP[k]){ input[KEYMAP[k]] = false; e.preventDefault(); }
+  if (k === " " || k === "Spacebar"){ input.fire = false; e.preventDefault(); }
+});
+
+/* Mouse: clique dispara */
+canvas.addEventListener("mousedown", e=>{ Sound.init(); Sound.resume(); if (game.state==="playing") input.fire = true; });
+window.addEventListener("mouseup", ()=>{ input.fire = false; });
+canvas.addEventListener("contextmenu", e=> e.preventDefault());
+
+/* Toque: joystick virtual + botão de tiro */
+const touchZone = document.getElementById("touch");
+const stick = document.getElementById("stick");
+const stickKnob = document.getElementById("stickKnob");
+const btnFire = document.getElementById("btnFire");
+const btnPause = document.getElementById("btnPause");
+let stickId = null;
+
+function isTouchDevice(){
+  return ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
+}
+
+function setupTouch(){
+  if (!isTouchDevice()) return;
+  touchZone.classList.add("on");
+  btnPause.classList.add("on");
+
+  function stickMove(clientX, clientY){
+    const r = stick.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    let dx = (clientX - cx) / (r.width/2);
+    let dy = (clientY - cy) / (r.height/2);
+    const len = Math.hypot(dx, dy);
+    if (len > 1){ dx /= len; dy /= len; }
+    stickKnob.style.transform = `translate(${dx*r.width*0.35}px, ${dy*r.height*0.35}px)`;
+    input.left  = dx < -0.25;
+    input.right = dx >  0.25;
+    input.up    = dy < -0.25;
+    input.down  = dy >  0.25;
+  }
+  function stickReset(){
+    stickKnob.style.transform = "translate(0,0)";
+    input.left = input.right = input.up = input.down = false;
+  }
+
+  stick.addEventListener("touchstart", e=>{
+    const t = e.changedTouches[0]; stickId = t.identifier; stickMove(t.clientX, t.clientY); e.preventDefault();
+  }, {passive:false});
+  stick.addEventListener("touchmove", e=>{
+    for (const t of e.changedTouches) if (t.identifier === stickId) stickMove(t.clientX, t.clientY);
+    e.preventDefault();
+  }, {passive:false});
+  stick.addEventListener("touchend", e=>{
+    for (const t of e.changedTouches) if (t.identifier === stickId){ stickId = null; stickReset(); }
+    e.preventDefault();
+  }, {passive:false});
+  stick.addEventListener("touchcancel", ()=>{ stickId=null; stickReset(); });
+
+  btnFire.addEventListener("touchstart", e=>{ Sound.init(); Sound.resume(); input.fire = true; e.preventDefault(); }, {passive:false});
+  btnFire.addEventListener("touchend", e=>{ input.fire = false; e.preventDefault(); }, {passive:false});
+  btnFire.addEventListener("touchcancel", ()=>{ input.fire = false; });
+
+  btnPause.addEventListener("click", ()=>{
+    if (game.state === "playing") pauseGame();
+    else if (game.state === "paused") resumeGame();
+  });
+}
+setupTouch();
+
+/* ================================================================
+   8) PARTÍCULAS / EFEITOS
+   ================================================================ */
+function spawnParticles(x, y, count, color, speed=180, life=0.6, size=3){
+  if (!Store.getSettings().fx) count = Math.ceil(count/3);
+  for (let i=0;i<count;i++){
+    if (particles.length >= CFG.maxParticles) break;
+    const a = Math.random()*Math.PI*2;
+    const s = rand(speed*0.25, speed);
+    particles.push({
+      x, y, vx:Math.cos(a)*s, vy:Math.sin(a)*s,
+      life: rand(life*0.5, life), maxLife: life,
+      color, size: rand(size*0.6, size*1.6)
+    });
+  }
+}
+
+function updateParticles(dt){
+  for (let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx*dt; p.y += p.vy*dt;
+    p.vx *= 0.96; p.vy *= 0.96;
+    p.life -= dt;
+    if (p.life <= 0) particles.splice(i,1);
+  }
+}
+
+/* ================================================================
+   9) FUNDO (estrelas + prateleiras em parallax)
+   ================================================================ */
+function initBackground(){
+  bg.stars = [];
+  for (let i=0;i<110;i++){
+    bg.stars.push({ x: rand(0,CFG.W), y: rand(0,CFG.H), z: rand(0.3,1), s: rand(0.6,2.1) });
+  }
+  bg.shelves = [];
+  for (let i=0;i<9;i++){
+    bg.shelves.push({ x: rand(0,CFG.W*1.5), w: rand(60,140), h: rand(80,190), y: rand(60,CFG.H-120), layer: randi(1,2) });
+  }
+}
+initBackground();
+
+function updateBackground(dt){
+  bg.t += dt;
+  for (const s of bg.stars){
+    s.x -= (18 + s.z*70) * dt;
+    if (s.x < -4){ s.x = CFG.W + 4; s.y = rand(0,CFG.H); }
+  }
+  for (const sh of bg.shelves){
+    const spd = sh.layer === 1 ? 22 : 46;
+    sh.x -= spd*dt;
+    if (sh.x + sh.w < -20){ sh.x = CFG.W + rand(40,260); sh.y = rand(60,CFG.H-120); sh.w = rand(60,140); sh.h = rand(80,190); }
+  }
+}
+
+/* ================================================================
+   10) JOGADOR
+   ================================================================ */
+function resetPlayer(){
+  player.x = 150; player.y = 300;
+  player.vx = 0; player.vy = 0;
+  player.cd = 0; player.invuln = 2;
+  player.rapid = 0; player.mult = 0; player.triple = 0;
+  player.thrust = 0;
+}
+
+function updatePlayer(dt){
+  // ---- Movimento com aceleração + amortecimento (movimento suave) ----
+  let ax = 0, ay = 0;
+  if (input.left)  ax -= 1;
+  if (input.right) ax += 1;
+  if (input.up)    ay -= 1;
+  if (input.down)  ay += 1;
+  if (ax !== 0 && ay !== 0){ const inv = 1/Math.SQRT2; ax*=inv; ay*=inv; }
+
+  player.vx += ax * CFG.playerAccel * dt;
+  player.vy += ay * CFG.playerAccel * dt;
+
+  const damp = Math.exp(-CFG.playerDamping * dt);
+  player.vx *= damp;
+  player.vy *= damp;
+
+  // Limita velocidade
+  const spd = Math.hypot(player.vx, player.vy);
+  if (spd > CFG.playerSpeed){
+    player.vx = player.vx/spd*CFG.playerSpeed;
+    player.vy = player.vy/spd*CFG.playerSpeed;
+  }
+
+  player.x += player.vx * dt;
+  player.y += player.vy * dt;
+
+  // Limites da área de jogo
+  const minX = 30, maxX = 600, minY = 112, maxY = CFG.H - 26;
+  if (player.x < minX){ player.x = minX; player.vx = 0; }
+  if (player.x > maxX){ player.x = maxX; player.vx = 0; }
+  if (player.y < minY){ player.y = minY; player.vy = 0; }
+  if (player.y > maxY){ player.y = maxY; player.vy = 0; }
+
+  player.thrust = clamp(Math.hypot(player.vx,player.vy)/CFG.playerSpeed, 0, 1);
+
+  // ---- Tiro ----
+  player.cd -= dt;
+  if (input.fire && player.cd <= 0 && game.qState !== "resolved"){
+    fireBullet();
+    player.cd = player.rapid > 0 ? CFG.fireDelayFast : CFG.fireDelay;
+  }
+
+  // ---- Timers de power-up ----
+  if (player.rapid > 0)  player.rapid  = Math.max(0, player.rapid - dt);
+  if (player.mult > 0)   player.mult   = Math.max(0, player.mult - dt);
+  if (player.triple > 0) player.triple = Math.max(0, player.triple - dt);
+  if (player.invuln > 0) player.invuln = Math.max(0, player.invuln - dt);
+}
+
+function fireBullet(){
+  Sound.shoot();
+  const spread = player.triple > 0 ? [-0.14, 0, 0.14] : [0];
+  for (const ang of spread){
+    bullets.push({
+      x: player.x + 26, y: player.y + ang*60,
+      vx: CFG.bulletSpeed * Math.cos(ang),
+      vy: CFG.bulletSpeed * Math.sin(ang),
+      hw: 7, hh: 3, dead:false, dmg:1
+    });
+  }
+  spawnParticles(player.x + 24, player.y, 2, "#8ff9ff", 60, 0.18, 1.6);
+}
+
+function damagePlayer(amount, reason){
+  if (player.invuln > 0) return;
+  game.energy -= amount;
+  player.invuln = 0.9;
+  game.shake = 8;
+  Sound.hitEnemy();
+  spawnParticles(player.x, player.y, 12, "#ff5555", 200, 0.5, 3);
+  if (game.energy <= 0){
+    game.energy = 0;
+    loseLife(reason);
+  }
+}
+
+function loseLife(reason){
+  game.lives--;
+  game.combo = 0;
+  Sound.explode();
+  spawnParticles(player.x, player.y, 40, "#ffcc00", 320, 0.9, 4);
+  game.shake = 18;
+  if (game.lives <= 0){
+    endGame(false);
+  } else {
+    game.energy = CFG.maxEnergy;
+    player.invuln = 2.2;
+    resetPlayer();
+    showFeedback("VIDA PERDIDA!", reason || "Cuidado com os inimigos.", "#ff3b3b", 2);
+  }
+}
+
+/* ================================================================
+   11) PROJÉTEIS
+   ================================================================ */
+function updateBullets(dt){
+  for (let i=bullets.length-1;i>=0;i--){
+    const b = bullets[i];
+    b.x += b.vx*dt; b.y += b.vy*dt;
+    if (b.x > CFG.W + 40 || b.y < -40 || b.y > CFG.H + 40) bullets.splice(i,1);
+  }
+  for (let i=enemyBullets.length-1;i>=0;i--){
+    const b = enemyBullets[i];
+    b.x += b.vx*dt; b.y += b.vy*dt;
+    if (b.x < -40 || b.x > CFG.W+40 || b.y < -40 || b.y > CFG.H+40) enemyBullets.splice(i,1);
+  }
+}
+
+/* ================================================================
+   12) INIMIGOS
+   ================================================================ */
+function spawnEnemy(){
+  const tipo = Math.random() < 0.18 + game.phase*0.02 ? (Math.random()<0.5?"waver":"tank") : "drone";
+  const baseY = rand(130, CFG.H-60);
+  const e = {
+    type:tipo,
+    x: CFG.W + 50,
+    y: baseY,
+    baseY,
+    hw: tipo==="tank" ? 24 : 18,
+    hh: tipo==="tank" ? 20 : 14,
+    vx: tipo==="tank" ? -70 - game.phase*4 : -120 - game.phase*9,
+    hp: tipo==="tank" ? 3 : 1,
+    maxHp: tipo==="tank" ? 3 : 1,
+    t: 0,
+    amp: rand(20, 70),
+    color: tipo==="tank" ? "#ff7b00" : (tipo==="waver" ? "#ff2d95" : "#7cf6ff")
+  };
+  enemies.push(e);
+}
+
+function updateEnemies(dt){
+  game.enemySpawnTimer -= dt;
+  const interval = Math.max(0.85, 2.6 - game.phase*0.18);
+  if (game.enemySpawnTimer <= 0 && game.qState !== "resolved"){
+    spawnEnemy();
+    game.enemySpawnTimer = interval * rand(0.7, 1.3);
+  }
+
+  for (let i=enemies.length-1;i>=0;i--){
+    const e = enemies[i];
+    e.t += dt;
+    e.x += e.vx*dt;
+    if (e.type === "waver") e.y = e.baseY + Math.sin(e.t*3) * e.amp;
+    if (e.x < -60) enemies.splice(i,1);
+  }
+}
+
+function killEnemy(e, idx){
+  Sound.explode();
+  spawnParticles(e.x, e.y, e.type==="tank"?26:14, e.color, 240, 0.6, 3.2);
+  game.score += e.type==="tank" ? 60 : 25;
+  // Chance de power-up
+  if (Math.random() < CFG.powerupDropChance) spawnPowerup(e.x, e.y);
+  enemies.splice(idx,1);
+}
+
+/* ================================================================
+   13) POWER-UPS
+   ================================================================ */
+function spawnPowerup(x, y){
+  const def = POWERUPS[randi(0, POWERUPS.length-1)];
+  powerups.push({ x, y, hw:16, hh:16, vx:-70, t:0, def, dead:false });
+}
+
+function updatePowerups(dt){
+  for (let i=powerups.length-1;i>=0;i--){
+    const p = powerups[i];
+    p.t += dt;
+    p.x += p.vx*dt;
+    p.y += Math.sin(p.t*3)*0.7;
+    if (p.x < -40) powerups.splice(i,1);
+  }
+}
+
+function applyPowerup(def){
+  Sound.powerup();
+  switch(def.id){
+    case "energy":
+      game.energy = Math.min(CFG.maxEnergy, game.energy + 35);
+      break;
+    case "rapid":
+      player.rapid = CFG.powerupDuration;
+      break;
+    case "shield":
+      game.shieldActive = true;
+      break;
+    case "mult":
+      player.mult = CFG.powerupDuration;
+      break;
+    case "triple":
+      player.triple = CFG.powerupDuration;
+      break;
+  }
+  showFeedback(def.label, def.desc, def.color, 1.4);
+  spawnParticles(player.x, player.y, 18, def.color, 200, 0.6, 3);
+}
+
+/* ================================================================
+   14) SISTEMA DE PERGUNTAS (mecânica pedagógica central)
+   ================================================================ */
+const POD = { x:770, w:300, h:80, gap:12, y0:104 };
+
+function podCenterY(i){ return POD.y0 + i*(POD.h + POD.gap) + POD.h/2; }
+
+/* Cria os 4 alvos da questão, embaralhando as alternativas */
+function spawnQuestion(q){
+  game.currentQuestion = q;
+  const order = shuffle([0,1,2,3]);
+  const alts = order.map(i => q.a[i]);
+  game.currentCorrectIndex = order.indexOf(q.c);
+
+  pods = [];
+  for (let i=0;i<4;i++){
+    pods.push({
+      idx:i,
+      letter: "ABCD"[i],
+      text: alts[i],
+      x: CFG.W + 260 + i*110,
+      y: podCenterY(i),
+      tx: POD.x,
+      ty: podCenterY(i),
+      hw: POD.w/2, hh: POD.h/2,
+      alpha: 1, dead:false, bob: Math.random()*Math.PI*2, hitFlash:0
+    });
+  }
+  game.qState = "entering";
+}
+
+function updatePods(dt){
+  let allArrived = true;
+  for (const p of pods){
+    p.bob += dt*2;
+    const dx = p.tx - p.x;
+    if (Math.abs(dx) > 1.5){
+      p.x += dx * Math.min(1, dt*4.5);
+      allArrived = false;
+    } else {
+      p.x = p.tx;
+    }
+    if (p.hitFlash > 0) p.hitFlash -= dt;
+    p.y = p.ty + Math.sin(p.bob)*3.5;
+  }
+  if (game.qState === "entering" && allArrived){
+    game.qState = "active";
+  }
+}
+
+/* Resolve o disparo em um alvo */
+function resolvePod(pod){
+  if (game.qState !== "active") return;
+  game.qState = "resolved";
+
+  const q = game.currentQuestion;
+  const isCorrect = pod.idx === game.currentCorrectIndex;
+
+  if (isCorrect){
+    /* ---------- ACERTO ---------- */
+    game.combo++;
+    game.maxCombo = Math.max(game.maxCombo, game.combo);
+    game.phaseCorrect++;
+    game.sessionCorrect++;
+    game.qAnswered++;
+
+    const diff = difficultyOfPhase(game.phase);
+    let pts = CFG.scoreByDifficulty[diff];
+    // Bônus por velocidade (responder rápido)
+    pts += 25;
+    // Multiplicador de combo
+    const cb = CFG.comboBonus[game.combo];
+    if (cb) pts += cb;
+    // Multiplicador de power-up LOGÍSTICA
+    if (player.mult > 0) pts *= 2;
+
+    game.score += pts;
+    game.energy = Math.min(CFG.maxEnergy, game.energy + CFG.energyRegenOnCorrect);
+
+    Sound.correct();
+    spawnParticles(pod.x, pod.y, 34, "#39ff88", 300, 0.8, 4);
+    showFeedback("RESPOSTA CORRETA!", "+" + pts + " pontos  •  " + q.e, "#39ff88", 2.6);
+
+    if (game.isBossPhase && game.boss && game.boss.hp > 0){
+      game.boss.hp--;
+      game.boss.hitFlash = 0.35;
+      spawnParticles(game.boss.x, game.boss.y, 24, "#ffcc00", 260, 0.7, 5);
+      if (game.boss.hp <= 0){
+        defeatBoss();
+      }
+    }
+
+    // Remove os demais alvos
+    for (const p of pods) if (p !== pod) p.alpha = Math.max(0, p.alpha - dt_fade());
+    pod.alpha = 1;
+    game.resolveTimer = 1.9;
+
+  } else {
+    /* ---------- ERRO ---------- */
+    if (game.shieldActive){
+      // Power-up INVENTÁRIO protege contra um erro
+      game.shieldActive = false;
+      Sound.powerup();
+      showFeedback("INVENTÁRIO ATIVADO!", "Seu erro foi protegido. " + q.e, "#4fc3ff", 2.8);
+      spawnParticles(pod.x, pod.y, 24, "#4fc3ff", 240, 0.7, 4);
+      pod.hitFlash = 0.4;
+      game.qState = "active";   // permite tentar novamente
+      return;
+    }
+
+    game.combo = 0;
+    game.phaseWrong++;
+    game.sessionWrong++;
+    game.qAnswered++;
+
+    Sound.wrong();
+    spawnParticles(pod.x, pod.y, 20, "#ff3b3b", 220, 0.6, 3.5);
+    game.shake = 10;
+
+    const letraCorreta = "ABCD"[game.currentCorrectIndex];
+    showFeedback("INCORRETO!", "Resposta correta: " + letraCorreta + " — " + q.e, "#ff3b3b", 3);
+
+    game.mistakes.push({
+      pergunta: q.p,
+      escolhida: pod.text,
+      correta: q.a[q.c],
+      explicacao: q.e
+    });
+
+    if (game.isBossPhase && game.boss) game.boss.hitFlash = 0.2;
+
+    game.resolveTimer = 2.4;
+    damagePlayer(CFG.wrongDamage, "Você errou a resposta.");
+  }
+
+  // Desativa todos os alvos após a resolução
+  for (const p of pods) p.alpha = Math.min(p.alpha, 0.6);
+  pod.hitFlash = 0.5;
+}
+
+/* Fade suave (helper para não depender do dt dentro do resolve) */
+function dt_fade(){ return 0.02; }
+
+/* ================================================================
+   15) CHEFES
+   ================================================================ */
+function createBoss(name){
+  return {
+    name,
+    hp: CFG.bossHP,
+    maxHp: CFG.bossHP,
+    x: 720, y: 280,
+    hw: 118, hh: 130,
+    t: 0,
+    shootTimer: 1.6,
+    hitFlash: 0,
+    dead: false
+  };
+}
+
+function updateBoss(dt){
+  const b = game.boss;
+  if (!b || b.dead) return;
+  b.t += dt;
+  b.y = 280 + Math.sin(b.t*0.9) * 105;
+  b.x = 720 + Math.sin(b.t*0.5) * 18;
+  if (b.hitFlash > 0) b.hitFlash -= dt;
+
+  // Disparos do chefe
+  b.shootTimer -= dt;
+  if (b.shootTimer <= 0){
+    b.shootTimer = Math.max(0.75, 1.9 - game.phase*0.08);
+    const n = 3;
+    for (let i=0;i<n;i++){
+      const ang = Math.PI + (i - (n-1)/2) * 0.24;
+      enemyBullets.push({
+        x: b.x - 60, y: b.y - 40 + i*40,
+        vx: -260 * Math.cos(ang - Math.PI),
+        vy: 260 * Math.sin(ang - Math.PI) * 0.55,
+        hw: 7, hh: 7
+      });
+    }
+    Sound.tone(140, 0.12, "sawtooth", 0.16, 80);
+  }
+}
+
+function defeatBoss(){
+  const b = game.boss;
+  b.dead = true;
+  Sound.explode();
+  Sound.levelUp();
+  for (let i=0;i<8;i++){
+    setTimeout(()=>{
+      if (!game.boss) return;
+      spawnParticles(b.x + rand(-90,90), b.y + rand(-110,110), 26, i%2?"#ffcc00":"#ff3b3b", 340, 0.9, 5);
+      Sound.explode();
+    }, i*120);
+  }
+  game.score += 1500;
+  game.shake = 24;
+  showFeedback("CHEFE DERROTADO!", b.name + " foi neutralizado. +1500 pontos", "#ffcc00", 3.2);
+}
+
+/* ================================================================
+   16) FLUXO DE JOGO — iniciar, fases, questões, fim
+   ================================================================ */
+function showFeedback(text, sub, color, duration){
+  game.feedback = { text, sub: sub || "", color: color || "#fff", timer: duration || 2 };
+}
+
+function startSession(){
+  const prof = Store.getProfile();
+  const prog = Store.getProgress();
+  game.phase = 1;
+  game.score = 0;
+  game.combo = 0;
+  game.maxCombo = 0;
+  game.lives = CFG.startLives;
+  game.energy = CFG.maxEnergy;
+  game.sessionCorrect = 0;
+  game.sessionWrong = 0;
+  game.sessionStart = performance.now();
+  game.sessionTime = 0;
+  game.mistakes = [];
+  game.shieldActive = false;
+  startPhase(Math.min(prog.unlocked || 1, 1) === 1 ? 1 : 1);
+}
+
+function startPhase(n){
+  game.phase = n;
+  game.phaseCfg = PHASES[n-1];
+  game.isBossPhase = !!game.phaseCfg.boss;
+
+  const pool = shuffle(QUESTIONS.filter(q => q.f === n).slice());
+  game.qQueue = pool.slice();
+  game.qTotal = game.phaseCfg.qtd;
+  game.qAnswered = 0;
+  game.phaseCorrect = 0;
+  game.phaseWrong = 0;
+  game.mistakes = [];
+
+  bullets = []; enemyBullets = []; enemies = []; pods = []; powerups = []; particles = [];
+
+  resetPlayer();
+  player.rapid = 0; player.mult = 0; player.triple = 0;
+  game.energy = CFG.maxEnergy;
+  game.shieldActive = false;
+  game.combo = 0;
+  game.enemySpawnTimer = 2.4;
+  game.qState = "idle";
+  game.resolveTimer = 0;
+  game.nextTimer = 0.9;
+
+  game.boss = null;
+  if (game.isBossPhase){
+    game.boss = createBoss(game.phaseCfg.boss);
+    Sound.bossAlarm();
+    showFeedback("⚠ ALERTA DE CHEFE", game.phaseCfg.boss + " se aproxima!", "#ff2d95", 3);
+  } else {
+    showFeedback("FASE " + n, game.phaseCfg.nome + " — " + game.phaseCfg.sub, "#1de9ff", 2.4);
+  }
+
+  game.state = "playing";
+  hideAllScreens();
+  updateHUD();
+}
+
+function nextQuestion(){
+  // Verifica condições de fim de fase
+  if (game.isBossPhase){
+    if (!game.boss || game.boss.hp <= 0) return finishPhase();
+  } else {
+    if (game.qAnswered >= game.qTotal) return finishPhase();
+  }
+
+  if (game.qQueue.length === 0){
+    game.qQueue = shuffle(QUESTIONS.filter(q => q.f === game.phase).slice());
+  }
+  const q = game.qQueue.pop();
+  spawnQuestion(q);
+}
+
+function finishPhase(){
+  game.state = "phasecomplete";
+  const total = game.phaseCorrect + game.phaseWrong;
+  const acc = total > 0 ? Math.round((game.phaseCorrect/total)*100) : 0;
+
+  // Salva progresso
+  const prog = Store.getProgress();
+  prog.phaseStats = prog.phaseStats || {};
+  const st = prog.phaseStats[game.phase] || { acertos:0, erros:0, pontos:0, tentativas:0 };
+  st.acertos += game.phaseCorrect;
+  st.erros += game.phaseWrong;
+  st.pontos = Math.max(st.pontos, game.score);
+  st.tentativas = (st.tentativas||0) + 1;
+  st.melhorPrecisao = Math.max(st.melhorPrecisao || 0, acc);
+  prog.phaseStats[game.phase] = st;
+
+  const aprovado = acc >= CFG.answerMinAccuracy;
+  if (aprovado){
+    prog.unlocked = Math.max(prog.unlocked || 1, Math.min(game.phase + 1, PHASES.length));
+    prog.bestPhase = Math.max(prog.bestPhase || 1, game.phase);
+  }
+  prog.bestScore = Math.max(prog.bestScore || 0, game.score);
+  Store.setProgress(prog);
+
+  Sound.levelUp();
+  Sound.stopMusic();
+
+  if (game.phase >= PHASES.length && aprovado){
+    // Vitória final
+    const cls = calcClassification();
+    Store.addResult(buildResultRecord(cls.nome));
+    endGame(true);
+    return;
+  }
+
+  renderPhaseComplete(acc, aprovado);
+  showScreen("scFaseConcluida");
+}
+
+function renderPhaseComplete(acc, aprovado){
+  const total = game.phaseCorrect + game.phaseWrong;
+  document.getElementById("fcTitulo").textContent = aprovado ? "FASE CONCLUÍDA!" : "FASE NÃO CONCLUÍDA";
+  document.getElementById("fcTitulo").style.color = aprovado ? "var(--neon)" : "var(--amber)";
+  document.getElementById("fcBody").innerHTML = `
+    <div class="statgrid">
+      <div class="stat"><b>Fase</b><span>${game.phase} — ${game.phaseCfg.nome}</span></div>
+      <div class="stat"><b>Pontuação total</b><span>${game.score}</span></div>
+      <div class="stat"><b>Acertos</b><span style="color:var(--green)">${game.phaseCorrect}</span></div>
+      <div class="stat"><b>Erros</b><span style="color:var(--red)">${game.phaseWrong}</span></div>
+      <div class="stat"><b>Precisão</b><span>${acc}%</span></div>
+      <div class="stat"><b>Maior combo</b><span>${game.maxCombo}</span></div>
+    </div>
+    <div class="bar" style="margin-top:12px"><i style="width:${clamp(acc,0,100)}%"></i></div>
+    <p style="margin-top:10px;color:${aprovado ? '#39ff88' : '#ffcc00'}">
+      ${aprovado
+        ? "✔ Requisito mínimo de " + CFG.answerMinAccuracy + "% atingido. Próxima fase desbloqueada!"
+        : "⚠ Você precisa de pelo menos " + CFG.answerMinAccuracy + "% de acertos para desbloquear a próxima fase. Tente novamente!"}
+    </p>`;
+
+  document.getElementById("fcProxima").disabled = !aprovado;
+  document.getElementById("fcProxima").style.display = aprovado ? "" : "none";
+  document.getElementById("fcRepetir").style.display = aprovado ? "none" : "";
+}
+
+function endGame(victory){
+  game.state = victory ? "victory" : "gameover";
+  Sound.stopMusic();
+  if (victory) Sound.victory(); else Sound.defeat();
+
+  const total = game.sessionCorrect + game.sessionWrong;
+  const acc = total > 0 ? Math.round((game.sessionCorrect/total)*100) : 0;
+  const cls = calcClassification();
+
+  if (!victory){
+    // Registra a tentativa que falhou
+    Store.addResult(buildResultRecord(cls.nome, false));
+  }
+
+  const body = `
+    <div class="statgrid">
+      <div class="stat"><b>Pontuação</b><span>${game.score}</span></div>
+      <div class="stat"><b>Fase alcançada</b><span>${game.phase}</span></div>
+      <div class="stat"><b>Acertos</b><span style="color:var(--green)">${game.sessionCorrect}</span></div>
+      <div class="stat"><b>Erros</b><span style="color:var(--red)">${game.sessionWrong}</span></div>
+      <div class="stat"><b>Precisão</b><span>${acc}%</span></div>
+      <div class="stat"><b>Maior combo</b><span>${game.maxCombo}</span></div>
+      <div class="stat"><b>Tempo</b><span>${fmtTime(game.sessionTime)}</span></div>
+      <div class="stat"><b>Classificação</b><span>${cls.nome}</span></div>
+    </div>
+    <div class="bar ${victory?'':'pink'}" style="margin-top:12px"><i style="width:${clamp(acc,0,100)}%"></i></div>`;
+
+  if (victory){
+    document.getElementById("viBody").innerHTML = body;
+    showScreen("scVitoria");
+  } else {
+    document.getElementById("goBody").innerHTML = body;
+    showScreen("scGameOver");
+  }
+}
+
+/* Classificação final baseada no percentual de acertos */
+function calcClassification(){
+  const total = game.sessionCorrect + game.sessionWrong;
+  const acc = total > 0 ? (game.sessionCorrect/total)*100 : 0;
+  if (acc >= 90) return { nome:"MESTRE DO ABASTECIMENTO", pct:acc };
+  if (acc >= 80) return { nome:"ESPECIALISTA EM ESTOQUE", pct:acc };
+  if (acc >= 70) return { nome:"OPERADOR AVANÇADO", pct:acc };
+  if (acc >= 60) return { nome:"OPERADOR EM DESENVOLVIMENTO", pct:acc };
+  return { nome:"EM TREINAMENTO", pct:acc };
+}
+
+/* Monta o registro de resultado (usado no Modo Professor / exportação) */
+function buildResultRecord(classificacao, concluido){
+  const prof = Store.getProfile();
+  const total = game.sessionCorrect + game.sessionWrong;
+  const acc = total > 0 ? Math.round((game.sessionCorrect/total)*100) : 0;
+
+  // Melhor desempenho por fase (para relatório)
+  const porFase = {};
+  for (let i=1;i<=8;i++){
+    const st = (Store.getProgress().phaseStats||{})[String(i)];
+    if (st) porFase[i] = { acertos: st.acertos, erros: st.erros, precisao: Math.round((st.acertos/(st.acertos+st.erros||1))*100) };
+  }
+
+  return {
+    nome: prof.nome || "Aluno",
+    turma: prof.turma || "-",
+    data: new Date().toISOString(),
+    dataBR: new Date().toLocaleString("pt-BR"),
+    pontuacao: game.score,
+    acertos: game.sessionCorrect,
+    erros: game.sessionWrong,
+    percentual: acc,
+    maiorCombo: game.maxCombo,
+    tempo: Math.round(game.sessionTime),
+    fasesConcluidas: concluido ? 8 : Math.max(0, game.phase - 1),
+    faseAlcancada: game.phase,
+    classificacao: classificacao,
+    porFase
+  };
+}
+
+/* ================================================================
+   17) UPDATE PRINCIPAL
+   ================================================================ */
+function update(dt){
+  game.time += dt;
+  game.sessionTime = (performance.now() - game.sessionStart) / 1000;
+
+  updateBackground(dt);
+  updatePlayer(dt);
+  updateBullets(dt);
+  updateEnemies(dt);
+  updatePowerups(dt);
+  updateBoss(dt);
+  updateParticles(dt);
+  updatePods(dt);
+
+  if (game.shake > 0) game.shake = Math.max(0, game.shake - dt*40);
+
+  /* ---- Timer de feedback ---- */
+  if (game.feedback.timer > 0) game.feedback.timer -= dt;
+
+  /* ---- Ciclo das perguntas ---- */
+  if (game.qState === "idle"){
+    game.nextTimer -= dt;
+    if (game.nextTimer <= 0) nextQuestion();
+  } else if (game.qState === "resolved"){
+    game.resolveTimer -= dt;
+    if (game.resolveTimer <= 0){
+      // Fade out dos alvos
+      let allGone = true;
+      for (const p of pods){
+        p.alpha -= dt*2.4;
+        if (p.alpha > 0) allGone = false;
+      }
+      if (allGone || game.resolveTimer < -1.2){
+        pods = [];
+        game.qState = "idle";
+        game.nextTimer = 0.35;
+      }
+    }
+  }
+
+  /* ---- Colisões ---- */
+  collisionDetection();
+
+  /* ---- Checagem de fim ---- */
+  if (game.lives <= 0 && game.state === "playing") endGame(false);
+}
+
+/* ================================================================
+   18) COLISÕES
+   ================================================================ */
+function collisionDetection(){
+  /* --- Tiros do jogador x alvos de resposta --- */
+  for (let bi = bullets.length-1; bi >= 0; bi--){
+    const b = bullets[bi];
+    let consumed = false;
+
+    if (game.qState === "active"){
+      for (const p of pods){
+        if (p.alpha < 0.5) continue;
+        if (aabb(b, p)){
+          resolvePod(p);
+          consumed = true;
+          break;
+        }
+      }
+    }
+    if (consumed){ bullets.splice(bi,1); continue; }
+
+    /* --- Tiros do jogador x inimigos --- */
+    for (let ei = enemies.length-1; ei >= 0; ei--){
+      const e = enemies[ei];
+      if (aabb(b, e)){
+        e.hp -= b.dmg;
+        spawnParticles(b.x, b.y, 5, "#bffcff", 140, 0.3, 2);
+        Sound.hitEnemy();
+        if (e.hp <= 0) killEnemy(e, ei);
+        consumed = true;
+        break;
+      }
+    }
+    if (consumed){ bullets.splice(bi,1); continue; }
+
+    /* --- Tiros do jogador x chefe (o chefe é imune a tiros comuns) --- */
+    if (game.boss && !game.boss.dead && aabb(b, game.boss)){
+      spawnParticles(b.x, b.y, 4, "#8899aa", 120, 0.25, 2);
+      bullets.splice(bi,1);
+    }
+  }
+
+  /* --- Jogador x inimigos --- */
+  if (player.invuln <= 0){
+    for (let ei = enemies.length-1; ei >= 0; ei--){
+      if (aabb(player, enemies[ei])){
+        damagePlayer(CFG.enemyDamage, "Colisão com inimigo.");
+        spawnParticles(enemies[ei].x, enemies[ei].y, 14, "#ff7b00", 220, 0.5, 3);
+        enemies.splice(ei,1);
+        break;
+      }
+    }
+  }
+
+  /* --- Jogador x projéteis do chefe --- */
+  if (player.invuln <= 0){
+    for (let i=enemyBullets.length-1;i>=0;i--){
+      if (aabb(player, enemyBullets[i])){
+        damagePlayer(CFG.bossShotDamage, "Ataque do chefe.");
+        spawnParticles(enemyBullets[i].x, enemyBullets[i].y, 10, "#ff2d95", 200, 0.4, 3);
+        enemyBullets.splice(i,1);
+        break;
+      }
+    }
+  }
+
+  /* --- Jogador x power-ups --- */
+  for (let i=powerups.length-1;i>=0;i--){
+    if (aabb(player, powerups[i])){
+      applyPowerup(powerups[i].def);
+      powerups.splice(i,1);
+    }
+  }
+}
+
+/* ================================================================
+   19) RENDERIZAÇÃO
+   ================================================================ */
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function wrapText(text, maxWidth, font){
+  ctx.font = font;
+  const words = String(text).split(" ");
+  const lines = [];
+  let line = "";
+  for (const w of words){
+    const test = line ? line + " " + w : w;
+    if (ctx.measureText(test).width > maxWidth && line){
+      lines.push(line);
+      line = w;
+    } else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function render(){
+  const W = CFG.W, H = CFG.H;
+
+  ctx.save();
+  // Screen shake
+  if (game.shake > 0){
+    ctx.translate(rand(-game.shake, game.shake)*0.5, rand(-game.shake, game.shake)*0.5);
+  }
+
+  /* ---- Fundo ---- */
+  const grd = ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0, "#071227");
+  grd.addColorStop(0.55, "#040a16");
+  grd.addColorStop(1, "#02040a");
+  ctx.fillStyle = grd;
+  ctx.fillRect(-20,-20,W+40,H+40);
+
+  // Estrelas
+  for (const s of bg.stars){
+    ctx.globalAlpha = 0.25 + s.z*0.7;
+    ctx.fillStyle = "#bff4ff";
+    ctx.fillRect(s.x, s.y, s.s, s.s);
+  }
+  ctx.globalAlpha = 1;
+
+  // Prateleiras em parallax
+  for (const sh of bg.shelves){
+    ctx.globalAlpha = sh.layer === 1 ? 0.10 : 0.18;
+    ctx.fillStyle = sh.layer === 1 ? "#1de9ff" : "#00ffc8";
+    ctx.fillRect(sh.x, sh.y, sh.w, sh.h);
+    // "caixas" dentro da prateleira
+    ctx.globalAlpha = sh.layer === 1 ? 0.06 : 0.12;
+    for (let yy = sh.y + 8; yy < sh.y + sh.h - 8; yy += 22){
+      for (let xx = sh.x + 6; xx < sh.x + sh.w - 12; xx += 26){
+        ctx.fillRect(xx, yy, 18, 14);
+      }
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  /* ---- Chefe (desenhado atrás dos painéis) ---- */
+  if (game.boss && !game.boss.dead) drawBoss(game.boss);
+
+  /* ---- Inimigos ---- */
+  for (const e of enemies) drawEnemy(e);
+
+  /* ---- Power-ups ---- */
+  for (const p of powerups) drawPowerup(p);
+
+  /* ---- Projéteis ---- */
+  for (const b of bullets) drawBullet(b, "#8ff9ff", "#00ffc8");
+  for (const b of enemyBullets) drawBullet(b, "#ff9ecb", "#ff2d95");
+
+  /* ---- Alvos de resposta ---- */
+  for (const p of pods) drawPod(p);
+
+  /* ---- Jogador ---- */
+  if (game.state === "playing" || game.state === "paused" || game.state === "phasecomplete"){
+    drawPlayer();
+  }
+
+  /* ---- Partículas ---- */
+  for (const p of particles){
+    const a = clamp(p.life / p.maxLife, 0, 1);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+
+  /* ---- HUD ---- */
+  if (game.state !== "menu") drawHUD();
+
+  /* ---- Barra de pergunta ---- */
+  if (game.state === "playing" || game.state === "paused"){
+    drawQuestionBar();
+  }
+
+  /* ---- Feedback central ---- */
+  if (game.feedback.timer > 0 && game.state === "playing"){
+    drawFeedback();
+  }
+}
+
+/* ---------- Desenho do jogador (nave operador de abastecimento) ---------- */
+function drawPlayer(){
+  const blink = player.invuln > 0 && Math.floor(game.time*14) % 2 === 0;
+  if (blink) ctx.globalAlpha = 0.35;
+
+  ctx.save();
+  ctx.translate(player.x, player.y);
+
+  // Chama do motor
+  const flame = 10 + player.thrust*16 + Math.random()*5;
+  const fg = ctx.createLinearGradient(-22,0,-22-flame,0);
+  fg.addColorStop(0, "rgba(0,255,200,.95)");
+  fg.addColorStop(1, "rgba(0,120,255,0)");
+  ctx.fillStyle = fg;
+  ctx.beginPath();
+  ctx.moveTo(-18,-7);
+  ctx.lineTo(-18-flame, 0);
+  ctx.lineTo(-18, 7);
+  ctx.closePath();
+  ctx.fill();
+
+  // Corpo
+  const bodyGrad = ctx.createLinearGradient(-20,0,28,0);
+  bodyGrad.addColorStop(0, "#0b6b7a");
+  bodyGrad.addColorStop(0.55, "#22d3ee");
+  bodyGrad.addColorStop(1, "#e6feff");
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.moveTo(28,0);
+  ctx.lineTo(4,-11);
+  ctx.lineTo(-16,-15);
+  ctx.lineTo(-10,0);
+  ctx.lineTo(-16,15);
+  ctx.lineTo(4,11);
+  ctx.closePath();
+  ctx.fill();
+
+  // Contorno neon
+  ctx.strokeStyle = "#00ffc8";
+  ctx.lineWidth = 2;
+  ctx.shadowColor = "#00ffc8";
+  ctx.shadowBlur = 12;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Cockpit
+  ctx.fillStyle = "#02121a";
+  ctx.beginPath();
+  ctx.ellipse(8, 0, 8, 5, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = "#7cf6ff";
+  ctx.beginPath();
+  ctx.ellipse(9, 0, 4, 2.4, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // Escudo (power-up INVENTÁRIO)
+  if (game.shieldActive){
+    ctx.strokeStyle = "rgba(79,195,255,.85)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0,0,32,0,Math.PI*2);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(79,195,255,.3)";
+    ctx.beginPath();
+    ctx.arc(0,0,38,0,Math.PI*2);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- Desenho de inimigos ---------- */
+function drawEnemy(e){
+  ctx.save();
+  ctx.translate(e.x, e.y);
+  ctx.shadowColor = e.color;
+  ctx.shadowBlur = 12;
+
+  ctx.fillStyle = "rgba(6,14,22,.95)";
+  ctx.strokeStyle = e.color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-e.hw, 0);
+  ctx.lineTo(-e.hw*0.3, -e.hh);
+  ctx.lineTo(e.hw, -e.hh*0.6);
+  ctx.lineTo(e.hw, e.hh*0.6);
+  ctx.lineTo(-e.hw*0.3, e.hh);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // "Olho" do drone
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = e.color;
+  ctx.beginPath();
+  ctx.arc(-2, 0, 4.5, 0, Math.PI*2);
+  ctx.fill();
+
+  // Barras tipo código de barras
+  ctx.fillStyle = "rgba(255,255,255,.35)";
+  for (let i=0;i<4;i++) ctx.fillRect(-e.hw+5 + i*6, -e.hh+4, 2, e.hh*2-8);
+
+  // Vida (tanque)
+  if (e.maxHp > 1){
+    ctx.fillStyle = "rgba(0,0,0,.6)";
+    ctx.fillRect(-e.hw, -e.hh-9, e.hw*2, 4);
+    ctx.fillStyle = "#39ff88";
+    ctx.fillRect(-e.hw, -e.hh-9, e.hw*2*(e.hp/e.maxHp), 4);
+  }
+
+  ctx.restore();
+}
+
+/* ---------- Desenho do chefe ---------- */
+function drawBoss(b){
+  ctx.save();
+  ctx.globalAlpha = 0.85;
+  ctx.translate(b.x, b.y);
+
+  // Aura
+  const aura = ctx.createRadialGradient(0,0,20,0,0,220);
+  aura.addColorStop(0, "rgba(255,45,149,.28)");
+  aura.addColorStop(1, "rgba(255,45,149,0)");
+  ctx.fillStyle = aura;
+  ctx.fillRect(-240,-240,480,480);
+
+  // Corpo
+  ctx.fillStyle = b.hitFlash > 0 ? "#ffdddd" : "rgba(18,8,26,.95)";
+  ctx.strokeStyle = "#ff2d95";
+  ctx.lineWidth = 3;
+  ctx.shadowColor = "#ff2d95";
+  ctx.shadowBlur = 22;
+  ctx.beginPath();
+  ctx.moveTo(-b.hw, -b.hh*0.7);
+  ctx.lineTo(-b.hw*0.2, -b.hh);
+  ctx.lineTo(b.hw, -b.hh*0.55);
+  ctx.lineTo(b.hw, b.hh*0.55);
+  ctx.lineTo(-b.hw*0.2, b.hh);
+  ctx.lineTo(-b.hw, b.hh*0.7);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Olhos
+  ctx.fillStyle = "#ffcc00";
+  ctx.beginPath(); ctx.arc(-b.hw*0.45, -34, 11, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-b.hw*0.45,  34, 11, 0, Math.PI*2); ctx.fill();
+
+  // "Boca" tecnológica
+  ctx.fillStyle = "rgba(255,45,149,.7)";
+  for (let i=0;i<6;i++) ctx.fillRect(-b.hw*0.55 + i*17, -6, 10, 12);
+
+  // Nome do chefe
+  ctx.globalAlpha = 1;
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#ff2d95";
+  ctx.shadowColor = "#ff2d95"; ctx.shadowBlur = 10;
+  ctx.fillText(b.name, 0, -b.hh - 16);
+  ctx.shadowBlur = 0;
+
+  ctx.restore();
+}
+
+/* ---------- Desenho de projéteis ---------- */
+function drawBullet(b, inner, outer){
+  ctx.save();
+  ctx.shadowColor = outer;
+  ctx.shadowBlur = 10;
+  const g = ctx.createLinearGradient(b.x-b.hw,0,b.x+b.hw,0);
+  g.addColorStop(0, outer);
+  g.addColorStop(1, inner);
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(b.x, b.y, b.hw, b.hh, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/* ---------- Desenho de power-ups ---------- */
+function drawPowerup(p){
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  const s = 15 + Math.sin(p.t*5)*1.6;
+  ctx.shadowColor = p.def.color;
+  ctx.shadowBlur = 16;
+  ctx.strokeStyle = p.def.color;
+  ctx.lineWidth = 2.5;
+  ctx.fillStyle = "rgba(0,0,0,.7)";
+  ctx.beginPath();
+  for (let i=0;i<6;i++){
+    const a = (Math.PI/3)*i - Math.PI/6;
+    const px = Math.cos(a)*s, py = Math.sin(a)*s;
+    if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+
+  // Letra inicial do power-up
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = p.def.color;
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(p.def.label[0], 0, 1);
+  ctx.restore();
+}
+
+/* ---------- Desenho dos alvos de resposta (pods) ---------- */
+function drawPod(p){
+  if (p.alpha <= 0.01) return;
+  ctx.save();
+  ctx.globalAlpha = p.alpha;
+
+  const x = p.x - p.hw, y = p.y - p.hh, w = p.hw*2, h = p.hh*2;
+
+  // Painel
+  ctx.fillStyle = "rgba(3,12,20,.92)";
+  roundRect(x, y, w, h, 10);
+  ctx.fill();
+
+  // Borda neon
+  ctx.strokeStyle = p.hitFlash > 0 ? "#ffffff" : "#1de9ff";
+  ctx.lineWidth = 2;
+  ctx.shadowColor = p.hitFlash > 0 ? "#ffffff" : "#1de9ff";
+  ctx.shadowBlur = 14;
+  roundRect(x, y, w, h, 10);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Cantos decorativos
+  ctx.strokeStyle = "rgba(0,255,200,.6)";
+  ctx.lineWidth = 2;
+  const c = 12;
+  [[x+6,y+6,1,1],[x+w-6,y+6,-1,1],[x+6,y+h-6,1,-1],[x+w-6,y+h-6,-1,-1]].forEach(([cx,cy,sx,sy])=>{
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + sy*c); ctx.lineTo(cx, cy); ctx.lineTo(cx + sx*c, cy);
+    ctx.stroke();
+  });
+
+  // Letra
+  ctx.fillStyle = "#1de9ff";
+  ctx.font = "bold 22px 'Courier New', monospace";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(p.letter, x + 22, p.y);
+
+  // Texto da alternativa
+  const lines = wrapText(p.text, w - 62, "13px 'Courier New', monospace");
+  ctx.fillStyle = "#dff6ff";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  const lh = 15;
+  const startY = p.y - ((lines.length-1)*lh)/2;
+  lines.slice(0,4).forEach((ln, i)=>{
+    ctx.fillText(ln, x + 44, startY + i*lh);
+  });
+
+  ctx.restore();
+}
+
+/* ---------- HUD ---------- */
+function drawHUD(){
+  ctx.save();
+
+  // Barra superior
+  ctx.fillStyle = "rgba(2,8,14,.85)";
+  ctx.fillRect(0,0,CFG.W,34);
+  ctx.strokeStyle = "rgba(29,233,255,.35)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0,34.5); ctx.lineTo(CFG.W,34.5); ctx.stroke();
+
+  ctx.textBaseline = "middle";
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.textAlign = "left";
+
+  // Pontuação
+  ctx.fillStyle = "#7fa8bb";
+  ctx.fillText("PONTOS", 14, 12);
+  ctx.fillStyle = "#00ffc8";
+  ctx.font = "bold 16px 'Courier New', monospace";
+  ctx.fillText(String(game.score).padStart(6,"0"), 14, 25);
+
+  // Fase
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.fillStyle = "#7fa8bb";
+  ctx.fillText("FASE", 130, 12);
+  ctx.fillStyle = "#1de9ff";
+  ctx.font = "bold 16px 'Courier New', monospace";
+  ctx.fillText(game.phase + "/8", 130, 25);
+
+  // Vidas
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.fillStyle = "#7fa8bb";
+  ctx.fillText("VIDAS", 210, 12);
+  for (let i=0;i<CFG.startLives;i++){
+    ctx.fillStyle = i < game.lives ? "#ff2d95" : "rgba(255,45,149,.2)";
+    ctx.beginPath();
+    ctx.moveTo(212 + i*18, 27);
+    ctx.lineTo(218 + i*18, 19);
+    ctx.lineTo(224 + i*18, 27);
+    ctx.lineTo(218 + i*18, 32);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Energia
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.fillStyle = "#7fa8bb";
+  ctx.fillText("ENERGIA", 300, 12);
+  const ew = 150, ex = 300, ey = 19;
+  ctx.fillStyle = "rgba(255,255,255,.1)";
+  roundRect(ex, ey, ew, 10, 5); ctx.fill();
+  const epct = clamp(game.energy / CFG.maxEnergy, 0, 1);
+  const ecol = epct > 0.5 ? "#39ff88" : (epct > 0.25 ? "#ffcc00" : "#ff3b3b");
+  ctx.fillStyle = ecol;
+  roundRect(ex, ey, Math.max(2, ew*epct), 10, 5); ctx.fill();
+  ctx.strokeStyle = "rgba(29,233,255,.35)";
+  roundRect(ex, ey, ew, 10, 5); ctx.stroke();
+
+  // Combo
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.fillStyle = "#7fa8bb";
+  ctx.fillText("COMBO", 480, 12);
+  ctx.fillStyle = game.combo > 1 ? "#ffcc00" : "#4a6472";
+  ctx.font = "bold 16px 'Courier New', monospace";
+  ctx.fillText("x" + game.combo, 480, 25);
+
+  // Progresso da fase
+  ctx.font = "bold 13px 'Courier New', monospace";
+  ctx.fillStyle = "#7fa8bb";
+  ctx.fillText("PROGRESSO", 570, 12);
+  const pw = 170, px = 570, py = 19;
+  ctx.fillStyle = "rgba(255,255,255,.1)";
+  roundRect(px, py, pw, 10, 5); ctx.fill();
+  let progPct = 0;
+  if (game.isBossPhase && game.boss){
+    progPct = 1 - (game.boss.hp / game.boss.maxHp);
+  } else {
+    progPct = game.qTotal > 0 ? game.qAnswered / game.qTotal : 0;
+  }
+  ctx.fillStyle = "#1de9ff";
+  roundRect(px, py, Math.max(2, pw*clamp(progPct,0,1)), 10, 5); ctx.fill();
+  ctx.strokeStyle = "rgba(29,233,255,.35)";
+  roundRect(px, py, pw, 10, 5); ctx.stroke();
+
+  // Power-ups ativos
+  let puX = 770;
+  ctx.font = "bold 11px 'Courier New', monospace";
+  ctx.textAlign = "left";
+  if (player.rapid > 0){ ctx.fillStyle = "#ffd400"; ctx.fillText("⚡RÁPIDO " + Math.ceil(player.rapid), puX, 25); puX += 92; }
+  if (player.mult > 0){ ctx.fillStyle = "#ff7bd5"; ctx.fillText("×2 " + Math.ceil(player.mult), puX, 25); puX += 60; }
+  if (player.triple > 0){ ctx.fillStyle = "#ff9f1c"; ctx.fillText("≡3 " + Math.ceil(player.triple), puX, 25); }
+  if (game.shieldActive){ ctx.fillStyle = "#4fc3ff"; ctx.fillText("🛡", CFG.W - 30, 25); }
+
+  // Barra de vida do chefe
+  if (game.isBossPhase && game.boss && !game.boss.dead){
+    const bx = 250, bw = 460, by = 46;
+    ctx.fillStyle = "rgba(0,0,0,.6)";
+    roundRect(bx, by, bw, 13, 6); ctx.fill();
+    ctx.fillStyle = "#ff2d95";
+    roundRect(bx, by, Math.max(2, bw*(game.boss.hp/game.boss.maxHp)), 13, 6); ctx.fill();
+    ctx.strokeStyle = "rgba(255,45,149,.7)";
+    roundRect(bx, by, bw, 13, 6); ctx.stroke();
+    ctx.fillStyle = "#ff9ecb";
+    ctx.font = "bold 10px 'Courier New', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(game.boss.name, bx + bw/2, by + 26);
+  }
+
+  ctx.restore();
+}
+
+/* ---------- Barra de pergunta ---------- */
+function drawQuestionBar(){
+  const q = game.currentQuestion;
+  const y = 36, h = 58;
+
+  ctx.save();
+  ctx.fillStyle = "rgba(2,10,18,.88)";
+  ctx.fillRect(0, y, CFG.W, h);
+  ctx.strokeStyle = "rgba(0,255,200,.45)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0,y+0.5); ctx.lineTo(CFG.W,y+0.5); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,y+h-0.5); ctx.lineTo(CFG.W,y+h-0.5); ctx.stroke();
+
+  if (q){
+    ctx.font = "bold 15px 'Courier New', monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const lines = wrapText(q.p, CFG.W - 80, "bold 15px 'Courier New', monospace").slice(0,2);
+    ctx.fillStyle = "#eaffff";
+    const startY = y + h/2 - ((lines.length-1)*19)/2;
+    lines.forEach((ln,i)=> ctx.fillText(ln, CFG.W/2, startY + i*19));
+  } else {
+    ctx.font = "bold 15px 'Courier New', monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#4a6472";
+    ctx.fillText("PREPARE-SE...", CFG.W/2, y + h/2);
+  }
+
+  // Contador de questão
+  if (!game.isBossPhase){
+    ctx.font = "bold 11px 'Courier New', monospace";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#7fa8bb";
+    ctx.fillText("QUESTÃO " + Math.min(game.qAnswered+1, game.qTotal) + "/" + game.qTotal, CFG.W - 16, y + h - 10);
+  }
+
+  ctx.restore();
+}
+
+/* ---------- Feedback central ---------- */
+function drawFeedback(){
+  const f = game.feedback;
+  const alpha = clamp(f.timer / 0.5, 0, 1);
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Fundo
+  const boxW = Math.min(CFG.W - 60, 720);
+  const lines = wrapText(f.sub, boxW - 40, "13px 'Courier New', monospace");
+  const boxH = 54 + Math.min(lines.length, 3) * 18;
+  const bx = (CFG.W - boxW)/2;
+  const by = CFG.H/2 - boxH/2;
+
+  ctx.fillStyle = "rgba(2,8,14,.94)";
+  roundRect(bx, by, boxW, boxH, 10); ctx.fill();
+  ctx.strokeStyle = f.color;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = f.color; ctx.shadowBlur = 18;
+  roundRect(bx, by, boxW, boxH, 10); ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Título
+  ctx.fillStyle = f.color;
+  ctx.font = "bold 22px 'Courier New', monospace";
+  ctx.fillText(f.text, CFG.W/2, by + 26);
+
+  // Explicação
+  ctx.fillStyle = "#bfe9f5";
+  ctx.font = "13px 'Courier New', monospace";
+  lines.slice(0,3).forEach((ln,i)=>{
+    ctx.fillText(ln, CFG.W/2, by + 54 + i*18);
+  });
+
+  ctx.restore();
+}
+
+/* ================================================================
+   20) CONTROLE DE TELAS (UI)
+   ================================================================ */
+const SCREENS = ["scMenu","scProfile","scComo","scTutorial","scDesempenho","scRevisao",
+                 "scFaseConcluida","scPausa","scGameOver","scVitoria","scConfig","scProfessor"];
+
+function hideAllScreens(){ SCREENS.forEach(id => document.getElementById(id).classList.remove("active")); }
+function showScreen(id){ hideAllScreens(); document.getElementById(id).classList.add("active"); }
+
+/* ---------- Menu principal ---------- */
+document.getElementById("mJogar").addEventListener("click", ()=>{
+  Sound.init(); Sound.resume();
+  const prof = Store.getProfile();
+  document.getElementById("inpNome").value = prof.nome || "";
+  document.getElementById("inpTurma").value = prof.turma || "";
+  showScreen("scProfile");
+});
+
+document.getElementById("mContinuar").addEventListener("click", ()=>{
+  const prog = Store.getProgress();
+  const prof = Store.getProfile();
+  if (!prof.nome){ showScreen("scProfile"); return; }
+  startSession();
+  startPhase(Math.min(prog.unlocked || 1, PHASES.length));
+});
+
+document.getElementById("mComo").addEventListener("click", ()=> showScreen("scComo"));
+document.getElementById("mDesempenho").addEventListener("click", ()=>{ renderDashboard(); showScreen("scDesempenho"); });
+document.getElementById("mProfessor").addEventListener("click", ()=>{ renderProfessor(); showScreen("scProfessor"); });
+document.getElementById("mConfig").addEventListener("click", ()=>{ renderConfig(); showScreen("scConfig"); });
+
+/* ---------- Perfil ---------- */
+document.getElementById("pVoltar").addEventListener("click", ()=> showScreen("scMenu"));
+document.getElementById("pIniciar").addEventListener("click", ()=>{
+  const nome = document.getElementById("inpNome").value.trim();
+  if (!nome){
+    document.getElementById("profileMsg").textContent = "⚠ Informe seu nome para continuar.";
+    document.getElementById("profileMsg").style.color = "#ff3b3b";
+    return;
+  }
+  const turma = document.getElementById("inpTurma").value.trim();
+  Store.setProfile({ nome, turma });
+
+  const settings = Store.getSettings();
+  if (!settings.tutorialDone){
+    startTutorial();
+  } else {
+    startSession();
+  }
+});
+
+/* ---------- Como jogar ---------- */
+document.getElementById("cVoltar").addEventListener("click", ()=> showScreen("scMenu"));
+
+/* ---------- Tutorial ---------- */
+const TUT_STEPS = [
+  { t:"PASSO 1 DE 5", d:"Use as setas do teclado (ou W A S D) para movimentar sua nave operadora." },
+  { t:"PASSO 2 DE 5", d:"Pressione ESPAÇO (ou clique / botão FIRE no celular) para disparar." },
+  { t:"PASSO 3 DE 5", d:"Uma pergunta aparecerá na parte superior da tela e quatro alvos surgirão à direita." },
+  { t:"PASSO 4 DE 5", d:"Atire no alvo que você considera a resposta CORRETA. Não há destaque — a decisão é sua!" },
+  { t:"PASSO 5 DE 5", d:"Boa! Você está pronto. Acertos dão pontos e energia. Erros custam energia. Chegou a hora de abastecer o PDV!" }
+];
+let tutIndex = 0;
+
+function startTutorial(){
+  tutIndex = 0;
+  renderTutorial();
+  showScreen("scTutorial");
+}
+function renderTutorial(){
+  document.getElementById("tutTitle").textContent = TUT_STEPS[tutIndex].t;
+  document.getElementById("tutText").textContent = TUT_STEPS[tutIndex].d;
+  document.getElementById("tutBar").style.width = ((tutIndex+1)/TUT_STEPS.length*100) + "%";
+}
+document.getElementById("tutNext").addEventListener("click", ()=>{
+  tutIndex++;
+  if (tutIndex >= TUT_STEPS.length){
+    const s = Store.getSettings(); s.tutorialDone = true; Store.setSettings(s);
+    startSession();
+  } else renderTutorial();
+});
+document.getElementById("tutSkip").addEventListener("click", ()=>{
+  const s = Store.getSettings(); s.tutorialDone = true; Store.setSettings(s);
+  startSession();
+});
+
+/* ---------- Pausa ---------- */
+function pauseGame(){
+  if (game.state !== "playing") return;
+  game.state = "paused";
+  input.fire = false;
+  Sound.stopMusic();
+  renderPauseButtons();
+  showScreen("scPausa");
+}
+function resumeGame(){
+  if (game.state !== "paused") return;
+  game.state = "playing";
+  if (Sound.musicOn) Sound.startMusic();
+  hideAllScreens();
+}
+function renderPauseButtons(){
+  document.getElementById("paSom").textContent = "🔊 SOM: " + (Sound.sfxOn ? "ON" : "OFF");
+  document.getElementById("paMusica").textContent = "🎵 MÚSICA: " + (Sound.musicOn ? "ON" : "OFF");
+}
+document.getElementById("paContinuar").addEventListener("click", resumeGame);
+document.getElementById("paReiniciar").addEventListener("click", ()=>{ hideAllScreens(); startPhase(game.phase); if (Sound.musicOn) Sound.startMusic(); });
+document.getElementById("paSom").addEventListener("click", ()=>{
+  Sound.sfxOn = !Sound.sfxOn;
+  const s = Store.getSettings(); s.sfx = Sound.sfxOn; Store.setSettings(s);
+  renderPauseButtons();
+});
+document.getElementById("paMusica").addEventListener("click", ()=>{
+  Sound.musicOn = !Sound.musicOn;
+  const s = Store.getSettings(); s.music = Sound.musicOn; Store.setSettings(s);
+  if (Sound.musicOn) Sound.startMusic(); else Sound.stopMusic();
+  renderPauseButtons();
+});
+document.getElementById("paMenu").addEventListener("click", ()=>{ Sound.stopMusic(); game.state = "menu"; updateHUD(); showScreen("scMenu"); });
+
+/* ---------- Fase concluída ---------- */
+document.getElementById("fcProxima").addEventListener("click", ()=>{
+  hideAllScreens();
+  startPhase(Math.min(game.phase + 1, PHASES.length));
+  if (Sound.musicOn) Sound.startMusic();
+});
+document.getElementById("fcRepetir").addEventListener("click", ()=>{
+  hideAllScreens();
+  startPhase(game.phase);
+  if (Sound.musicOn) Sound.startMusic();
+});
+document.getElementById("fcRevisar").addEventListener("click", ()=>{ renderReview(); showScreen("scRevisao"); });
+document.getElementById("fcMenu").addEventListener("click", ()=>{ game.state = "menu"; showScreen("scMenu"); });
+
+/* ---------- Game over / vitória ---------- */
+document.getElementById("goRetry").addEventListener("click", ()=>{
+  startSession();
+  if (Sound.musicOn) Sound.startMusic();
+});
+document.getElementById("goDesempenho").addEventListener("click", ()=>{ renderDashboard(); showScreen("scDesempenho"); });
+document.getElementById("goMenu").addEventListener("click", ()=>{ game.state = "menu"; showScreen("scMenu"); });
+document.getElementById("viRelatorio").addEventListener("click", ()=> generatePrintReport());
+document.getElementById("viDesempenho").addEventListener("click", ()=>{ renderDashboard(); showScreen("scDesempenho"); });
+document.getElementById("viMenu").addEventListener("click", ()=>{ game.state = "menu"; showScreen("scMenu"); });
+
+/* ---------- Revisão de erros ---------- */
+function renderReview(){
+  const box = document.getElementById("revisaoBody");
+  if (!game.mistakes.length){
+    box.innerHTML = `<p style="color:var(--green)">✔ Você não cometeu erros nesta fase. Excelente trabalho!</p>`;
+    return;
+  }
+  box.innerHTML = game.mistakes.map((m,i)=>`
+    <div class="err-item">
+      <div class="q">${i+1}. ${escapeHtml(m.pergunta)}</div>
+      <div class="a">✘ Sua resposta: ${escapeHtml(m.escolhida)}</div>
+      <div class="b">✔ Resposta correta: ${escapeHtml(m.correta)}</div>
+      <div class="e">💡 ${escapeHtml(m.explicacao)}</div>
+    </div>`).join("");
+}
+document.getElementById("rVoltar").addEventListener("click", ()=>{
+  if (game.state === "phasecomplete") showScreen("scFaseConcluida");
+  else showScreen("scMenu");
+});
+
+/* ---------- Desempenho ---------- */
+function renderDashboard(){
+  const prof = Store.getProfile();
+  const prog = Store.getProgress();
+  const results = Store.getResults();
+  const total = game.sessionCorrect + game.sessionWrong;
+  const acc = total > 0 ? Math.round(game.sessionCorrect/total*100) : 0;
+  const cls = calcClassification();
+
+  // Progresso por fase a partir do histórico salvo
+  let fasesConcluidas = 0;
+  for (let i=1;i<=8;i++){
+    const st = (prog.phaseStats||{})[String(i)];
+    if (st && (st.melhorPrecisao || 0) >= CFG.answerMinAccuracy) fasesConcluidas++;
+  }
+
+  const melhorScore = results.reduce((m,r)=> Math.max(m, r.pontuacao||0), 0);
+
+  document.getElementById("desempenhoBody").innerHTML = `
+    <div class="statgrid">
+      <div class="stat"><b>Nome</b><span>${escapeHtml(prof.nome || "—")}</span></div>
+      <div class="stat"><b>Turma</b><span>${escapeHtml(prof.turma || "—")}</span></div>
+      <div class="stat"><b>Pontuação da sessão</b><span>${game.score}</span></div>
+      <div class="stat"><b>Maior pontuação</b><span>${Math.max(melhorScore, prog.bestScore||0)}</span></div>
+      <div class="stat"><b>Fase atual</b><span>${game.phase}</span></div>
+      <div class="stat"><b>Fases concluídas</b><span>${fasesConcluidas}/8</span></div>
+      <div class="stat"><b>Taxa de acerto</b><span>${acc}%</span></div>
+      <div class="stat"><b>Maior combo</b><span>${game.maxCombo}</span></div>
+      <div class="stat"><b>Tempo de jogo</b><span>${fmtTime(game.sessionTime)}</span></div>
+      <div class="stat"><b>Questões respondidas</b><span>${total}</span></div>
+      <div class="stat"><b>Acertos</b><span style="color:var(--green)">${game.sessionCorrect}</span></div>
+      <div class="stat"><b>Erros</b><span style="color:var(--red)">${game.sessionWrong}</span></div>
+      <div class="stat"><b>Classificação</b><span>${cls.nome}</span></div>
+    </div>
+    <div style="margin-top:14px">
+      <div style="font-size:11px;color:#7fa8bb;letter-spacing:1px;margin-bottom:5px">PROGRESSO GERAL</div>
+      <div class="bar"><i style="width:${(fasesConcluidas/8*100).toFixed(0)}%"></i></div>
+    </div>
+    <div style="margin-top:14px">
+      <div style="font-size:11px;color:#7fa8bb;letter-spacing:1px;margin-bottom:5px">DESEMPENHO POR FASE (melhor precisão registrada)</div>
+      ${PHASES.map(p=>{
+        const st = (prog.phaseStats||{})[String(p.n)];
+        const pr = st ? (st.melhorPrecisao || 0) : 0;
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:11px">
+          <span style="width:190px;color:#a9d6e5">F${p.n} — ${p.nome}</span>
+          <span style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;display:block">
+            <i style="display:block;height:100%;width:${pr}%;background:${pr>=60?'#39ff88':'#ff7b00'}"></i>
+          </span>
+          <span style="width:40px;text-align:right;color:${pr>=60?'#39ff88':'#7fa8bb'}">${pr}%</span>
+        </div>`;
+      }).join("")}
+    </div>`;
+}
+document.getElementById("dVoltar").addEventListener("click", ()=> showScreen("scMenu"));
+document.getElementById("dRelatorio").addEventListener("click", ()=> generatePrintReport());
+
+/* ---------- Configurações ---------- */
+function renderConfig(){
+  const s = Store.getSettings();
+  Sound.sfxOn = s.sfx !== false;
+  Sound.musicOn = s.music !== false;
+  document.getElementById("cfSom").textContent = "🔊 SOM: " + (Sound.sfxOn ? "ON" : "OFF");
+  document.getElementById("cfMusica").textContent = "🎵 MÚSICA: " + (Sound.musicOn ? "ON" : "OFF");
+  document.getElementById("cfEfeitos").textContent = "✨ EFEITOS: " + (s.fx !== false ? "COMPLETOS" : "REDUZIDOS");
+  document.getElementById("cfMsg").textContent = "";
+}
+document.getElementById("cfSom").addEventListener("click", ()=>{
+  Sound.sfxOn = !Sound.sfxOn;
+  const s = Store.getSettings(); s.sfx = Sound.sfxOn; Store.setSettings(s);
+  renderConfig();
+});
+document.getElementById("cfMusica").addEventListener("click", ()=>{
+  Sound.musicOn = !Sound.musicOn;
+  const s = Store.getSettings(); s.music = Sound.musicOn; Store.setSettings(s);
+  if (Sound.musicOn){ Sound.init(); Sound.startMusic(); } else Sound.stopMusic();
+  renderConfig();
+});
+document.getElementById("cfEfeitos").addEventListener("click", ()=>{
+  const s = Store.getSettings(); s.fx = s.fx === false ? true : false; Store.setSettings(s);
+  renderConfig();
+});
+document.getElementById("cfReset").addEventListener("click", ()=>{
+  if (confirm("Todos os dados deste dispositivo serão apagados. Deseja continuar?")){
+    Store.remove(Store.K_PROFILE);
+    Store.remove(Store.K_PROGRESS);
+    Store.clearResults();
+    Store.remove(Store.K_SETTINGS);
+    document.getElementById("cfMsg").textContent = "✔ Dados apagados com sucesso.";
+    document.getElementById("cfMsg").style.color = "#39ff88";
+    game.score = 0; game.lives = CFG.startLives; game.energy = CFG.maxEnergy;
+    game.sessionCorrect = 0; game.sessionWrong = 0; game.maxCombo = 0; game.phase = 1;
+    updateHUD();
+  }
+});
+document.getElementById("cfVoltar").addEventListener("click", ()=> showScreen("scMenu"));
+
+/* ---------- Modo Professor ---------- */
+function renderProfessor(){
+  const results = Store.getResults();
+  const total = results.length;
+  const media = total ? Math.round(results.reduce((s,r)=> s + (r.percentual||0), 0) / total) : 0;
+  const melhor = total ? results.reduce((m,r)=> (r.pontuacao > m.pontuacao ? r : m), results[0]) : null;
+  const nomes = new Set(results.map(r=> r.nome)).size;
+
+  document.getElementById("profStats").innerHTML = `
+    <div class="stat"><b>Registros</b><span>${total}</span></div>
+    <div class="stat"><b>Alunos distintos</b><span>${nomes}</span></div>
+    <div class="stat"><b>Média de acerto</b><span>${media}%</span></div>
+    <div class="stat"><b>Melhor pontuação</b><span>${melhor ? melhor.pontuacao : 0}</span></div>`;
+
+  const tbody = document.querySelector("#profTable tbody");
+  if (!total){
+    tbody.innerHTML = `<tr><td colspan="7" style="color:#7fa8bb;text-align:center;padding:18px">Nenhum resultado registrado neste dispositivo ainda.</td></tr>`;
+  } else {
+    tbody.innerHTML = results.slice().reverse().map(r=>`
+      <tr>
+        <td>${escapeHtml(r.nome)}</td>
+        <td>${escapeHtml(r.turma || "-")}</td>
+        <td>${escapeHtml(r.dataBR || "-")}</td>
+        <td>${r.pontuacao}</td>
+        <td>${r.percentual}%</td>
+        <td>${r.fasesConcluidas}/8</td>
+        <td>${escapeHtml(r.classificacao || "-")}</td>
+      </tr>`).join("");
+  }
+  document.getElementById("prMsg").textContent = "";
+}
+
+/* Exportação CSV */
+document.getElementById("prCSV").addEventListener("click", ()=>{
+  const results = Store.getResults();
+  if (!results.length){ document.getElementById("prMsg").textContent = "Nenhum resultado para exportar."; return; }
+  const head = ["Nome","Turma","Data","Pontuacao","Acertos","Erros","Percentual","MaiorCombo","Tempo(s)","FasesConcluidas","FaseAlcancada","Classificacao"];
+  const rows = results.map(r => [
+    r.nome, r.turma, r.dataBR, r.pontuacao, r.acertos, r.erros, r.percentual,
+    r.maiorCombo, r.tempo, r.fasesConcluidas, r.faseAlcancada, r.classificacao
+  ]);
+  const csv = [head, ...rows]
+    .map(line => line.map(v => `"${String(v).replace(/"/g,'""')}"`).join(";"))
+    .join("\r\n");
+  downloadFile("\uFEFF" + csv, "supermarket_raiders_resultados.csv", "text/csv;charset=utf-8");
+  document.getElementById("prMsg").textContent = "✔ CSV exportado.";
+});
+
+/* Exportação JSON */
+document.getElementById("prJSON").addEventListener("click", ()=>{
+  const results = Store.getResults();
+  if (!results.length){ document.getElementById("prMsg").textContent = "Nenhum resultado para exportar."; return; }
+  downloadFile(JSON.stringify(results, null, 2), "supermarket_raiders_resultados.json", "application/json");
+  document.getElementById("prMsg").textContent = "✔ JSON exportado.";
+});
+
+/* Impressão do modo professor */
+document.getElementById("prPrint").addEventListener("click", ()=>{
+  const results = Store.getResults();
+  const area = document.getElementById("printArea");
+  area.innerHTML = `
+    <h1>SUPERMARKET RAIDERS — Relatório de Resultados</h1>
+    <p>Gerado em ${new Date().toLocaleString("pt-BR")} • ${results.length} registro(s)</p>
+    <h2>Detalhamento</h2>
+    <table>
+      <thead><tr><th>Aluno</th><th>Turma</th><th>Data</th><th>Pontos</th><th>Acertos</th><th>Erros</th><th>%</th><th>Fases</th><th>Classificação</th></tr></thead>
+      <tbody>${results.map(r=>`<tr>
+        <td>${escapeHtml(r.nome)}</td><td>${escapeHtml(r.turma||"-")}</td><td>${escapeHtml(r.dataBR||"-")}</td>
+        <td>${r.pontuacao}</td><td>${r.acertos}</td><td>${r.erros}</td><td>${r.percentual}%</td>
+        <td>${r.fasesConcluidas}/8</td><td>${escapeHtml(r.classificacao||"-")}</td></tr>`).join("")}
+      </tbody>
+    </table>`;
+  window.print();
+});
+
+/* Limpar resultados */
+document.getElementById("prLimpar").addEventListener("click", ()=>{
+  if (confirm("Apagar TODOS os resultados armazenados neste dispositivo? Esta ação não pode ser desfeita.")){
+    Store.clearResults();
+    renderProfessor();
+    document.getElementById("prMsg").textContent = "✔ Resultados apagados.";
+    document.getElementById("prMsg").style.color = "#39ff88";
+  }
+});
+document.getElementById("prVoltar").addEventListener("click", ()=> showScreen("scMenu"));
+
+/* ---------- Relatório individual (impressão / PDF) ---------- */
+function generatePrintReport(){
+  const prof = Store.getProfile();
+  const prog = Store.getProgress();
+  const total = game.sessionCorrect + game.sessionWrong;
+  const acc = total > 0 ? Math.round(game.sessionCorrect/total*100) : 0;
+  const cls = calcClassification();
+
+  // Conteúdos com melhor desempenho / a revisar
+  const faseScore = [];
+  for (let i=1;i<=8;i++){
+    const st = (prog.phaseStats||{})[String(i)];
+    if (st){
+      const t = (st.acertos + st.erros) || 1;
+      faseScore.push({ fase:i, nome:PHASES[i-1].nome, pct: Math.round(st.acertos/t*100) });
+    }
+  }
+  faseScore.sort((a,b)=> b.pct - a.pct);
+  const melhores = faseScore.filter(f=> f.pct >= 60).slice(0,4);
+  const revisar = faseScore.filter(f=> f.pct < 60).slice(0,4);
+
+  const area = document.getElementById("printArea");
+  area.innerHTML = `
+    <h1>SUPERMARKET RAIDERS — MISSÃO: ABASTECER O PDV</h1>
+    <p><b>Relatório de Desempenho — UC 8</b> · Abastecer o ponto de venda de produtos, mercadorias e serviços</p>
+    <h2>Identificação</h2>
+    <table>
+      <tr><th>Nome do aluno</th><td>${escapeHtml(prof.nome || "—")}</td></tr>
+      <tr><th>Turma</th><td>${escapeHtml(prof.turma || "—")}</td></tr>
+      <tr><th>Data</th><td>${new Date().toLocaleString("pt-BR")}</td></tr>
+    </table>
+    <h2>Resultado Geral</h2>
+    <table>
+      <tr><th>Pontuação</th><td>${game.score}</td><th>Fase alcançada</th><td>${game.phase}/8</td></tr>
+      <tr><th>Questões respondidas</th><td>${total}</td><th>Acertos</th><td>${game.sessionCorrect}</td></tr>
+      <tr><th>Erros</th><td>${game.sessionWrong}</td><th>Percentual de acerto</th><td>${acc}%</td></tr>
+      <tr><th>Maior combo</th><td>${game.maxCombo}</td><th>Tempo de jogo</th><td>${fmtTime(game.sessionTime)}</td></tr>
+      <tr><th>Fases concluídas</th><td>${PHASES.filter(p=>((prog.phaseStats||{})[String(p.n)]||{}).melhorPrecisao>=60).length}/8</td>
+          <th>Classificação</th><td><b>${cls.nome}</b></td></tr>
+    </table>
+    <p class="big">${cls.nome} — ${acc}% de acerto</p>
+    <h2>Desempenho por Conteúdo (Fase)</h2>
+    <table>
+      <thead><tr><th>Fase</th><th>Conteúdo</th><th>Precisão</th><th>Situação</th></tr></thead>
+      <tbody>${PHASES.map(p=>{
+        const st = (prog.phaseStats||{})[String(p.n)];
+        const t = st ? (st.acertos + st.erros) : 0;
+        const pct = t ? Math.round(st.acertos/t*100) : 0;
+        const sit = !st ? "Não cursado" : (pct >= 60 ? "Adequado" : "Revisar");
+        return `<tr><td>${p.n}</td><td>${p.nome}</td><td>${st?pct+"%":"—"}</td><td>${sit}</td></tr>`;
+      }).join("")}</tbody>
+    </table>
+    <h2>Conteúdos com Melhor Desempenho</h2>
+    <ul>${melhores.length ? melhores.map(m=>`<li>Fase ${m.fase} — ${m.nome} (${m.pct}%)</li>`).join("") : "<li>Nenhum conteúdo com desempenho igual ou superior a 60% até o momento.</li>"}</ul>
+    <h2>Conteúdos que Precisam ser Revisados</h2>
+    <ul>${revisar.length ? revisar.map(m=>`<li>Fase ${m.fase} — ${m.nome} (${m.pct}%)</li>`).join("") : "<li>Nenhum conteúdo abaixo de 60% registrado. Bom trabalho!</li>"}</ul>
+    ${game.mistakes.length ? `
+    <h2>Erros da Última Fase</h2>
+    <table>
+      <thead><tr><th>Pergunta</th><th>Sua resposta</th><th>Resposta correta</th><th>Explicação</th></tr></thead>
+      <tbody>${game.mistakes.map(m=>`<tr>
+        <td>${escapeHtml(m.pergunta)}</td>
+        <td>${escapeHtml(m.escolhida)}</td>
+        <td>${escapeHtml(m.correta)}</td>
+        <td>${escapeHtml(m.explicacao)}</td></tr>`).join("")}</tbody>
+    </table>` : ""}
+    <p style="margin-top:26px;font-size:11px">
+      Documento gerado localmente pelo jogo SUPERMARKET RAIDERS. Nenhum dado foi enviado a servidores.
+    </p>`;
+  window.print();
+}
+
+/* ---------- Utilidades de UI ---------- */
+function escapeHtml(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+function downloadFile(content, filename, mime){
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=> URL.revokeObjectURL(url), 1500);
+}
+
+function updateHUD(){
+  // HUD é desenhado no canvas; esta função apenas garante consistência de estado
+}
+
+/* ================================================================
+   21) GAME LOOP
+   ================================================================ */
+let lastTime = 0;
+
+function loop(ts){
+  requestAnimationFrame(loop);
+
+  if (!lastTime) lastTime = ts;
+  let dt = (ts - lastTime) / 1000;
+  lastTime = ts;
+  // Limita o delta para evitar "saltos" quando a aba perde o foco
+  dt = Math.min(dt, 0.05);
+
+  if (game.state === "playing"){
+    update(dt);
+  } else {
+    // Mantém o fundo vivo mesmo pausado / em menus
+    updateBackground(dt);
+    if (game.state === "paused") updateParticles(dt);
+    if (game.feedback.timer > 0) game.feedback.timer -= dt;
+  }
+
+  render();
+}
+
+/* ================================================================
+   22) INICIALIZAÇÃO
+   ================================================================ */
+function boot(){
+  // Aplica configurações salvas
+  const s = Store.getSettings();
+  Sound.sfxOn = s.sfx !== false;
+  Sound.musicOn = s.music !== false;
+
+  // Rodapé do menu com informações do jogador
+  const prof = Store.getProfile();
+  const prog = Store.getProgress();
+  const footer = document.getElementById("menuFooter");
+  if (prof.nome){
+    footer.textContent = `Operador: ${prof.nome}${prof.turma ? " • Turma " + prof.turma : ""} • Fase liberada: ${Math.min(prog.unlocked||1, 8)}/8 • Recorde: ${prog.bestScore||0} pts`;
+  } else {
+    footer.textContent = "Informe seu nome em JOGAR para começar a missão.";
+  }
+
+  // Detecta orientação em telas pequenas
+  if (isTouchDevice() && window.innerHeight > window.innerWidth){
+    setTimeout(()=>{
+      if (window.innerHeight > window.innerWidth && game.state === "playing"){
+        showFeedback("📱 GIRE O DISPOSITIVO", "Para uma melhor experiência, use o celular na horizontal.", "#ffcc00", 3);
+      }
+    }, 800);
+  }
+
+  // Inicia áudio somente após interação (exigência dos navegadores)
+  const startAudioOnce = ()=>{
+    Sound.init();
+    Sound.resume();
+    if (Sound.musicOn) Sound.startMusic();
+    window.removeEventListener("pointerdown", startAudioOnce);
+    window.removeEventListener("keydown", startAudioOnce);
+  };
+  window.addEventListener("pointerdown", startAudioOnce);
+  window.addEventListener("keydown", startAudioOnce);
+
+  requestAnimationFrame(loop);
+}
+
+boot();
+</script>
+</body>
+</html>
