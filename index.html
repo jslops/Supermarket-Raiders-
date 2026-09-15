@@ -6,9 +6,6 @@
 <meta name="theme-color" content="#05070d">
 <title>SUPERMARKET RAIDERS v3 — Missão: Abastecer o PDV</title>
 <style>
-/* ============================================================
-   SUPERMARKET RAIDERS v3 — Estilos
-   ============================================================ */
 :root{
   --neon:#00ffc8; --neon2:#ff2d95; --cyan:#1de9ff; --amber:#ffcc00;
   --red:#ff3b3b; --green:#39ff88; --bg:#05070d; --panel:rgba(6,12,22,.94);
@@ -156,7 +153,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
   <div id="stage">
     <canvas id="game" width="960" height="540"></canvas>
 
-    <!-- ================= MENU PRINCIPAL ================= -->
     <div class="screen active" id="scMenu">
       <h1>SUPERMARKET RAIDERS</h1>
       <div class="sub">MISSÃO: ABASTECER O PDV</div>
@@ -173,7 +169,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       <div class="hint" id="menuFooter"></div>
     </div>
 
-    <!-- ================= PERFIL ================= -->
     <div class="screen" id="scProfile">
       <h2>IDENTIFICAÇÃO DO OPERADOR</h2>
       <p>Seus dados ficam salvos neste navegador. Apenas <b>nome</b> e <b>turma</b> são enviados ao ranking compartilhado.</p>
@@ -191,7 +186,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       <div class="hint" id="profileMsg"></div>
     </div>
 
-    <!-- ================= COMO JOGAR ================= -->
     <div class="screen" id="scComo">
       <h2>COMO JOGAR</h2>
       <div class="panel">
@@ -219,7 +213,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       <button class="btn" id="cVoltar">VOLTAR AO MENU</button>
     </div>
 
-    <!-- ================= TUTORIAL ================= -->
     <div class="screen" id="scTutorial">
       <h2 id="tutTitle">TUTORIAL</h2>
       <div class="panel" style="max-width:640px">
@@ -232,7 +225,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= DESEMPENHO ================= -->
     <div class="screen" id="scDesempenho">
       <h2>MEU DESEMPENHO</h2>
       <div class="panel" id="desempenhoBody"></div>
@@ -242,14 +234,12 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= REVISÃO DE ERROS ================= -->
     <div class="screen" id="scRevisao">
       <h2>REVISAR ERROS</h2>
       <div class="scroll" id="revisaoBody"></div>
       <button class="btn" id="rVoltar">VOLTAR</button>
     </div>
 
-    <!-- ================= FASE CONCLUÍDA ================= -->
     <div class="screen" id="scFaseConcluida">
       <h1 id="fcTitulo">FASE CONCLUÍDA!</h1>
       <div class="panel" id="fcBody"></div>
@@ -261,7 +251,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= PAUSA ================= -->
     <div class="screen" id="scPausa">
       <h1>PAUSADO</h1>
       <div class="col" style="max-width:300px">
@@ -273,7 +262,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= GAME OVER ================= -->
     <div class="screen" id="scGameOver">
       <h1 style="color:var(--red);text-shadow:0 0 14px rgba(255,59,59,.9)">MISSÃO FRACASSOU</h1>
       <div class="panel" id="goBody"></div>
@@ -284,7 +272,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= VITÓRIA ================= -->
     <div class="screen" id="scVitoria">
       <h1 style="color:var(--amber);text-shadow:0 0 18px rgba(255,204,0,.9)">MISSÃO CUMPRIDA!</h1>
       <div class="panel" id="viBody"></div>
@@ -295,7 +282,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= RANKING PÚBLICO ================= -->
     <div class="screen" id="scRanking">
       <h2>🏆 RANKING GERAL</h2>
       <div class="sub" id="rankStatus">Carregando resultados…</div>
@@ -340,7 +326,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       </div>
     </div>
 
-    <!-- ================= CONFIGURAÇÕES ================= -->
     <div class="screen" id="scConfig">
       <h2>CONFIGURAÇÕES</h2>
       <div class="col" style="max-width:460px">
@@ -358,7 +343,6 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       <div class="hint" id="cfMsg"></div>
     </div>
 
-    <!-- ================= MODO PROFESSOR ================= -->
     <div class="screen" id="scProfessor">
       <h2>🎓 PAINEL DO PROFESSOR</h2>
       <div class="sub">Dados centralizados via JSONBin.io (ou cache local se offline)</div>
@@ -399,46 +383,23 @@ tr.me td:first-child{box-shadow:inset 3px 0 0 var(--neon);}
       <div class="hint" id="prMsg"></div>
     </div>
 
-    <!-- Controles touch -->
     <div id="touch">
       <div id="stick"><div id="stickKnob"></div></div>
       <button id="btnFire">FIRE</button>
     </div>
     <button id="btnPause">❚❚ PAUSA</button>
-
-    <!-- Indicador de sincronização -->
     <div id="syncBadge" class="hidden">🔄 SINCRONIZANDO…</div>
-
-    <!-- Toast de feedback -->
     <div class="toast" id="toast"></div>
   </div>
 </div>
 
-<!-- Área de impressão -->
 <div id="printArea"></div>
 
 <script>
 "use strict";
-/* ================================================================
-   SUPERMARKET RAIDERS v3 — Missão: Abastecer o PDV
-   HTML + CSS + JS puro + Canvas + Web Audio + LocalStorage + JSONBin.io
-   ================================================================ */
 
 /* ================================================================
    0) CONFIGURAÇÃO JSONBIN.IO
-   ----------------------------------------------------------------
-   As credenciais abaixo JÁ ESTÃO PREENCHIDAS.
-   ----------------------------------------------------------------
-   ⚠ AVISO DE SEGURANÇA:
-     Como este é um arquivo HTML estático (frontend-only), QUALQUER
-     chave embutida aqui é visível a quem abrir "Ver código-fonte".
-     A Master Key dá controle total sobre a conta JSONBin.
-     Para uso em sala de aula restrita, é aceitável.
-     Para uso público, prefira:
-       • uma X-Access-Key com permissão apenas de leitura/escrita
-         da Bin específica; e/ou
-       • um proxy serverless (ex.: Cloudflare Worker) que guarde a
-         Master Key do lado do servidor.
    ================================================================ */
 const CONFIG = {
   JSONBIN_BIN_ID:     "6aa98499ffd5d160530b0292",
@@ -450,16 +411,13 @@ const CONFIG = {
   CACHE_TTL_MS:       30000
 };
 
-/* Escolhe a chave efetiva: Access Key se existir, senão Master Key */
 function jsonbinHeaders(){
   const h = { "Content-Type":"application/json", "X-Bin-Versioning":"false" };
-  let key = "";
   if (CONFIG.JSONBIN_ACCESS_KEY && !CONFIG.JSONBIN_ACCESS_KEY.startsWith("COLOCAR")){
-    key = CONFIG.JSONBIN_ACCESS_KEY;
+    h["X-Access-Key"] = CONFIG.JSONBIN_ACCESS_KEY;
   } else if (CONFIG.JSONBIN_MASTER_KEY && !CONFIG.JSONBIN_MASTER_KEY.startsWith("COLOCAR")){
-    key = CONFIG.JSONBIN_MASTER_KEY;
+    h["X-Master-Key"] = CONFIG.JSONBIN_MASTER_KEY;
   }
-  if (key) h["X-Master-Key"] = key;
   return h;
 }
 function jsonbinConfigured(){
@@ -509,821 +467,825 @@ const POWERUPS = [
 ];
 
 /* ================================================================
-   2) BANCO DE QUESTÕES — 120 questões (15 por fase)
+   2) BANCO DE QUESTÕES — 120 questões
+   ----------------------------------------------------------------
+   REGRA DE OURO: alternativas com comprimento e complexidade
+   SEMELHANTES. A resposta correta NÃO deve se destacar por ser
+   mais longa, mais detalhada ou usar linguagem mais "profissional".
    ================================================================ */
 const QUESTIONS = [
 /* ---------------- FASE 1 — O ESTOQUE (15) ---------------- */
 {f:1,p:"O que é estoque em um supermercado?",a:[
- "Apenas os produtos expostos na prateleira",
- "O conjunto de mercadorias armazenadas e disponíveis para venda",
- "Somente os produtos que sobraram do mês",
- "A lista de clientes que frequentam o setor"],c:1,
+ "Apenas os produtos que ficam na prateleira",
+ "O conjunto de mercadorias disponíveis para venda",
+ "Somente os itens que sobraram do mês anterior",
+ "A relação de clientes que frequentam o setor"],c:1,
  e:"Estoque é o conjunto de mercadorias armazenadas (depósito e área de venda) disponíveis para comercialização."},
-{f:1,p:"Qual é a principal finalidade do estoque em um supermercado?",a:[
- "Aumentar o preço dos produtos",
- "Garantir que os produtos estejam disponíveis quando o cliente precisar",
- "Evitar que a loja compre mercadorias",
- "Ocupar todo o espaço do depósito"],c:1,
+{f:1,p:"Qual é a principal finalidade do estoque?",a:[
+ "Aumentar o preço final dos produtos na loja",
+ "Garantir produto disponível quando o cliente precisa",
+ "Evitar que a loja faça novas compras no mês",
+ "Ocupar todo o espaço útil do depósito da loja"],c:1,
  e:"O estoque existe para garantir disponibilidade de produto ao cliente, no momento em que ele procura."},
-{f:1,p:"Por que o controle de estoque é importante para a operação?",a:[
- "Para evitar qualquer registro de entrada",
- "Para acompanhar entradas, saídas e a disponibilidade real dos produtos",
- "Para impedir a reposição das prateleiras",
- "Para eliminar a etapa de conferência"],c:1,
+{f:1,p:"Por que o controle de estoque é importante?",a:[
+ "Para evitar qualquer registro de entrada na loja",
+ "Para acompanhar entradas, saídas e disponibilidade",
+ "Para impedir que a reposição seja feita a tempo",
+ "Para eliminar a etapa de conferência de notas"],c:1,
  e:"Controlar o estoque permite acompanhar entradas, saídas e a disponibilidade dos produtos, apoiando a tomada de decisão."},
-{f:1,p:"O produto está em falta na prateleira, mas o sistema indica que existe no estoque. Esse caso é chamado de:",a:[
- "Ruptura total de estoque",
- "Falha de reposição — o produto existe, mas não foi exposto",
- "Excesso de estoque",
- "Perda por avaria"],c:1,
+{f:1,p:"Produto em falta na prateleira, mas o sistema indica estoque. Esse caso é:",a:[
+ "Ruptura total do item no ponto de venda",
+ "Falha de reposição — existe, mas não foi exposto",
+ "Excesso de mercadoria guardada no depósito",
+ "Perda por avaria registrada no sistema da loja"],c:1,
  e:"Quando o produto existe no estoque mas não está na prateleira, temos falha de reposição. Ruptura é quando não há o produto."},
-{f:1,p:"O que significa dizer que um produto tem 'disponibilidade' no PDV?",a:[
- "Que ele está cadastrado no sistema",
- "Que ele está disponível para o cliente comprar no momento em que procura",
- "Que ele está no caminhão do fornecedor",
- "Que ele tem preço promocional"],c:1,
+{f:1,p:"O que significa ter disponibilidade no PDV?",a:[
+ "Estar cadastrado corretamente dentro do sistema",
+ "Estar acessível ao cliente no momento da compra",
+ "Estar no caminhão do fornecedor da região",
+ "Estar com preço promocional sinalizado na loja"],c:1,
  e:"Disponibilidade no PDV é o produto estar acessível ao cliente na hora da compra."},
 {f:1,p:"O que é estoque físico?",a:[
- "A quantidade registrada apenas no sistema",
- "A quantidade real de mercadorias presentes no depósito e na loja",
- "A quantidade de produtos vendidos no dia",
- "A quantidade de produtos encomendados ao fornecedor"],c:1,
+ "A quantidade registrada apenas no sistema da loja",
+ "A quantidade real presente na loja e no depósito",
+ "A quantidade de produtos vendidos durante o dia",
+ "A quantidade pedida ao fornecedor no fechamento"],c:1,
  e:"Estoque físico é a quantidade real, contada, presente fisicamente na loja e no depósito."},
-{f:1,p:"O que é estoque registrado (ou sistêmico)?",a:[
- "A quantidade que aparece no sistema de gestão da loja",
- "A quantidade contada manualmente no depósito",
- "A quantidade de clientes no setor",
- "A quantidade de caixas vazias no depósito"],c:0,
+{f:1,p:"O que é estoque registrado (sistêmico)?",a:[
+ "A quantidade que consta no sistema de gestão",
+ "A quantidade contada à mão dentro do depósito",
+ "A quantidade de clientes que passam pelo setor",
+ "A quantidade de caixas vazias deixadas no local"],c:0,
  e:"Estoque registrado é o saldo que consta no sistema, resultado dos lançamentos de entrada e saída."},
 {f:1,p:"Um estoque muito alto (excesso) pode provocar:",a:[
- "Falta de produtos para o cliente",
- "Perdas por validade, ocupação de espaço e dinheiro parado",
- "Aumento automático das vendas",
- "Redução do trabalho de reposição"],c:1,
+ "Falta de produtos para o cliente final da loja",
+ "Perdas, espaço ocupado e capital parado na loja",
+ "Aumento automático das vendas mensais da loja",
+ "Redução do trabalho de reposição feito pela equipe"],c:1,
  e:"Excesso de estoque gera dinheiro parado, risco de vencimento, ocupação de espaço e mais perdas."},
 {f:1,p:"Um estoque muito baixo pode provocar:",a:[
- "Ruptura e perda de vendas",
- "Aumento do lucro da loja",
- "Melhora na organização do depósito",
- "Redução das perdas por validade apenas"],c:0,
+ "Ruptura, com perda direta de vendas na loja",
+ "Aumento do lucro mensal da loja no período",
+ "Melhora na organização geral do depósito",
+ "Redução das perdas por validade no mês"],c:0,
  e:"Estoque abaixo do necessário gera ruptura: o cliente não encontra o produto e a loja perde a venda."},
-{f:1,p:"Quem é responsável por manter o ponto de venda abastecido?",a:[
- "Somente o gerente da loja",
- "Toda a equipe envolvida na operação, cada um em sua função",
- "Apenas o fornecedor",
- "Apenas o cliente"],c:1,
+{f:1,p:"Quem é responsável por manter o PDV abastecido?",a:[
+ "Somente o gerente da loja e seus auxiliares diretos",
+ "Toda a equipe envolvida na operação da loja",
+ "Apenas o fornecedor que realiza as entregas",
+ "Apenas o cliente que procura pelo produto"],c:1,
  e:"O abastecimento é resultado do trabalho integrado de recebimento, estocagem, reposição e gestão."},
-{f:1,p:"Você é o responsável pelo setor de mercearia e percebe que o estoque físico e o sistêmico estão divergentes em 20 unidades. Qual a melhor primeira ação?",a:[
- "Ajustar o sistema para igualar ao físico",
- "Recontar o item e investigar as causas antes de qualquer ajuste",
+{f:1,p:"Estoque físico e sistêmico divergem em 20 unidades. Qual a primeira ação?",a:[
+ "Ajustar o sistema para igualar ao estoque físico",
+ "Recontar o item e investigar as causas prováveis",
  "Ignorar a diferença até o inventário geral",
- "Pedir imediatamente mais mercadoria ao fornecedor"],c:1,
+ "Pedir mercadoria ao fornecedor imediatamente"],c:1,
  e:"Antes de qualquer ajuste, é preciso recontar e investigar as causas para não mascarar problemas maiores.",
  tipo:"situacional",
  dica:"Divergência não se resolve apenas no sistema: primeiro investigue, depois ajuste."},
-{f:1,p:"Um item de alta rotação não pode ficar mais de algumas horas sem reposição. Isso ocorre porque:",a:[
- "Produtos de alta rotação têm margem maior",
- "A ausência dele gera ruptura rápida e perda imediata de vendas",
- "O fornecedor exige essa prática",
- "O sistema trava quando o item zera"],c:1,
+{f:1,p:"Item de alta rotação sem reposição por horas é grave porque:",a:[
+ "Produtos de alto giro costumam ter margem maior",
+ "A ausência gera ruptura rápida e perda de venda",
+ "O fornecedor exige essa prática contratualmente",
+ "O sistema trava quando o item chega a zero"],c:1,
  e:"Itens de alta rotação se esgotam rápido, e cada hora sem reposição é venda perdida.",
  tipo:"situacional",
  dica:"Quanto maior o giro, mais crítica é a frequência de reposição."},
-{f:1,p:"Um cliente procura um produto que o sistema indica que existe no estoque, mas você não o encontra na prateleira. Qual a atitude mais profissional?",a:[
- "Dizer ao cliente que o produto está em falta",
- "Verificar o depósito, localizar o item e providenciar a reposição",
- "Pedir ao cliente para voltar outro dia",
- "Oferecer outro produto de marca diferente"],c:1,
+{f:1,p:"Cliente busca produto que o sistema diz existir, mas não há na prateleira:",a:[
+ "Dizer a ele que o produto está em falta no momento",
+ "Verificar o depósito, localizar o item e repor logo",
+ "Pedir que volte outro dia para tentar novamente",
+ "Oferecer a ele outra marca do mesmo produto"],c:1,
  e:"Antes de declarar falta, verifique o depósito: pode ser falha de reposição, não de estoque.",
  tipo:"situacional",
  dica:"Nem toda falta na prateleira é ruptura real — muitas vezes é falha de reposição."},
-{f:1,p:"O gerente pede para você reduzir o estoque de um item que está sobrando há semanas. A ação mais adequada é:",a:[
- "Descartar o produto",
- "Negociar promoção, ponta de gôndola e revisar os próximos pedidos",
- "Simplesmente parar de comprar sem avisar",
- "Esconder o produto no fundo do depósito"],c:1,
+{f:1,p:"Item sobra há semanas no depósito. Melhor ação?",a:[
+ "Descartar o produto para liberar o espaço livre",
+ "Negociar promoção, destaque e revisar pedidos",
+ "Simplesmente parar de comprar sem avisar ninguém",
+ "Esconder o produto no fundo do depósito da loja"],c:1,
  e:"Excesso se resolve com ação comercial (promoção, destaque) e ajuste de compras — não descartando produto.",
  tipo:"situacional",
  dica:"Excesso de estoque é problema comercial, não apenas logístico."},
-{f:1,p:"Sobre a relação entre estoque e disponibilidade no PDV, é correto afirmar:",a:[
- "Ter estoque sempre garante disponibilidade na prateleira",
- "Estoque existe, mas o cliente só compra se o produto estiver exposto no PDV",
- "Disponibilidade depende apenas do sistema",
- "Estoque físico e registrado nunca divergem"],c:1,
+{f:1,p:"Sobre estoque e disponibilidade no PDV, é correto afirmar:",a:[
+ "Ter estoque sempre garante disponibilidade na gôndola",
+ "Estoque existe, mas só vira venda se estiver exposto",
+ "A disponibilidade depende apenas do sistema interno",
+ "Estoque físico e registrado nunca divergem na loja"],c:1,
  e:"Estoque sem exposição não gera venda: a disponibilidade depende da reposição no ponto de venda.",
  tipo:"situacional",
  dica:"Estoque + reposição = disponibilidade real ao cliente."},
 
 /* ---------------- FASE 2 — RECEBIMENTO (15) ---------------- */
-{f:2,p:"Qual é uma das primeiras etapas ao receber uma mercadoria?",a:[
- "Guardar imediatamente no depósito",
- "Conferir a documentação (nota fiscal) e o pedido antes de dar entrada",
- "Colocar direto na prateleira de venda",
- "Assinar o recebimento e conferir depois"],c:1,
+{f:2,p:"Primeira etapa ao receber uma mercadoria?",a:[
+ "Guardar tudo rapidamente dentro do depósito da loja",
+ "Conferir a nota fiscal e o pedido antes da entrada",
+ "Colocar direto na prateleira de venda para o público",
+ "Assinar o recebimento e conferir depois com calma"],c:1,
  e:"O recebimento começa pela conferência documental: nota fiscal, pedido e dados do fornecedor."},
 {f:2,p:"O que é conferência quantitativa no recebimento?",a:[
- "Verificar a aparência da embalagem",
- "Verificar se a quantidade recebida confere com o pedido e a nota fiscal",
- "Verificar a validade do produto",
- "Verificar o preço de venda na gôndola"],c:1,
+ "Verificar a aparência da embalagem externa",
+ "Conferir se a quantidade bate com o documento",
+ "Verificar a validade de cada item recebido",
+ "Verificar o preço de venda já cadastrado"],c:1,
  e:"Conferência quantitativa é a contagem: a quantidade recebida deve bater com o documento."},
 {f:2,p:"O que é conferência qualitativa no recebimento?",a:[
- "Contar as caixas recebidas",
- "Verificar condições do produto: avarias, validade, integridade e temperatura",
- "Verificar o valor total da nota fiscal",
- "Verificar o nome do motorista da entrega"],c:1,
+ "Contar caixa por caixa com atenção e calma",
+ "Verificar avarias, validade, integridade e temperatura",
+ "Conferir o valor total que consta na nota fiscal",
+ "Verificar o nome do motorista que fez a entrega"],c:1,
  e:"Conferência qualitativa avalia as condições do produto: embalagem, validade, integridade e temperatura."},
-{f:2,p:"Você encontra divergência entre a nota fiscal e o produto recebido. O correto é:",a:[
- "Ignorar e guardar o produto rapidamente",
- "Registrar a divergência e comunicar o responsável antes de dar entrada",
- "Devolver toda a entrega sem avisar ninguém",
- "Corrigir a nota fiscal por conta própria"],c:1,
+{f:2,p:"Divergência entre nota fiscal e produto recebido. O correto é:",a:[
+ "Ignorar a diferença e guardar o produto rapidamente",
+ "Registrar a divergência e comunicar o responsável",
+ "Devolver toda a entrega sem avisar nenhuma pessoa",
+ "Corrigir a nota fiscal por conta própria no setor"],c:1,
  e:"Toda divergência deve ser registrada e comunicada antes de dar entrada, para não contaminar o estoque."},
-{f:2,p:"Um produto chegou com a embalagem violada. Qual a ação correta?",a:[
- "Colocar na prateleira normalmente",
- "Separar o produto, registrar a ocorrência e comunicar o responsável",
- "Vender com desconto sem registrar",
- "Descartar imediatamente sem registro"],c:1,
+{f:2,p:"Produto chegou com a embalagem violada. Qual a ação correta?",a:[
+ "Colocar na prateleira normalmente para a venda",
+ "Separar, registrar a ocorrência e comunicar",
+ "Vender com desconto sem qualquer tipo de registro",
+ "Descartar imediatamente, sem registro formal"],c:1,
  e:"Produto com embalagem violada deve ser separado e registrado, nunca exposto para venda."},
-{f:2,p:"Qual documento acompanha a mercadoria e deve ser conferido no recebimento?",a:[
- "O cartão de crédito do fornecedor",
- "A nota fiscal",
- "O manual do funcionário",
- "A lista de clientes do setor"],c:1,
+{f:2,p:"Qual documento acompanha a mercadoria no recebimento?",a:[
+ "O cartão de crédito usado pelo fornecedor",
+ "A nota fiscal emitida junto com o pedido",
+ "O manual de procedimentos do funcionário",
+ "A lista de clientes cadastrados no setor"],c:1,
  e:"A nota fiscal é o documento que formaliza a entrega e sustenta a conferência e o lançamento no sistema."},
-{f:2,p:"A nota fiscal indica 20 caixas, mas chegaram apenas 18. O procedimento correto é:",a:[
+{f:2,p:"A nota indica 20 caixas, mas chegaram 18. O correto é:",a:[
  "Dar entrada de 20 para não atrasar a reposição",
- "Dar entrada apenas das 18 recebidas e registrar a divergência",
- "Recusar toda a entrega imediatamente",
- "Pedir para o motorista trazer as outras depois e dar entrada de 20"],c:1,
+ "Dar entrada somente das 18 e registrar a diferença",
+ "Recusar toda a entrega por causa da diferença",
+ "Pedir ao motorista trazer as outras mais tarde"],c:1,
  e:"Deve-se dar entrada somente do que foi efetivamente recebido e registrar a divergência para cobrança."},
-{f:2,p:"Por que o recebimento deve ser feito com atenção, mesmo com o caminhão esperando?",a:[
- "Porque o fornecedor exige formalmente",
- "Porque erros no recebimento geram prejuízo, divergência de estoque e problemas no PDV",
- "Porque é uma exigência apenas estética",
- "Porque o sistema trava quando há pressa"],c:1,
+{f:2,p:"Por que o recebimento exige atenção mesmo com pressa?",a:[
+ "Porque o fornecedor exige formalmente essa postura",
+ "Porque erros geram prejuízo e estoque errado",
+ "Porque é uma exigência apenas estética da loja",
+ "Porque o sistema trava quando há muito atraso"],c:1,
  e:"Erro no recebimento contamina todo o processo: estoque errado, ruptura, prejuízo financeiro."},
-{f:2,p:"Produtos refrigerados devem ter a temperatura verificada:",a:[
- "Apenas no fechamento do mês",
- "No momento do recebimento, antes de serem armazenados",
- "Nunca — é responsabilidade exclusiva do fornecedor",
- "Somente quando o cliente reclamar"],c:1,
+{f:2,p:"Produtos refrigerados devem ter temperatura verificada:",a:[
+ "Apenas no fechamento do mês contábil da loja",
+ "No recebimento, antes de serem armazenados",
+ "Nunca, pois é responsabilidade do fornecedor",
+ "Somente quando algum cliente fizer reclamação"],c:1,
  e:"A cadeia de frio deve ser verificada no recebimento; produto fora da temperatura pode ser recusado."},
-{f:2,p:"Depois de conferir e dar entrada da mercadoria, o próximo passo é:",a:[
+{f:2,p:"Depois de conferir e dar entrada, o próximo passo é:",a:[
  "Deixar as caixas no corredor de recebimento",
- "Armazenar corretamente no depósito ou providenciar a reposição na área de venda",
- "Devolver tudo ao fornecedor",
- "Levar a mercadoria direto para o caixa"],c:1,
+ "Armazenar no depósito ou providenciar a reposição",
+ "Devolver tudo ao fornecedor por pura precaução",
+ "Levar a mercadoria direto para o caixa da loja"],c:1,
  e:"Após a entrada, a mercadoria segue para armazenamento adequado ou reposição, conforme o caso."},
-{f:2,p:"O caminhão chegou fora do horário e o motorista está com pressa, pedindo para você assinar a nota rapidamente. O correto é:",a:[
- "Assinar e conferir depois com calma",
- "Conferir com o mesmo rigor, avisando que a checagem é obrigatória",
+{f:2,p:"Caminhão chegou fora do horário e o motorista pede pressa. O correto é:",a:[
+ "Assinar a nota rapidamente e conferir depois",
+ "Conferir com o mesmo rigor, sem abrir exceção",
  "Recusar toda a entrega por causa do horário",
- "Assinar apenas com ressalva e não conferir"],c:1,
+ "Assinar com ressalva e não conferir nada"],c:1,
  e:"Pressa não justifica pular a conferência. Documente o horário, mas confira — é a única forma de proteger a loja.",
  tipo:"situacional",
  dica:"A conferência é a etapa que evita prejuízo; ela não pode ser negociada por conveniência."},
-{f:2,p:"Você recebeu produtos congelados cuja temperatura medida estava acima da faixa ideal. A melhor atitude é:",a:[
- "Aceitar e congelar rapidamente",
- "Recusar o produto ou registrar ocorrência e comunicar o responsável",
+{f:2,p:"Produtos congelados chegaram acima da temperatura ideal. Melhor atitude:",a:[
+ "Aceitar e congelar rapidamente dentro do depósito",
+ "Recusar ou registrar ocorrência e comunicar",
  "Colocar em câmara fria e vender no mesmo dia",
- "Deixar para conferir depois"],c:1,
+ "Deixar para conferir a temperatura depois do turno"],c:1,
  e:"Quebra da cadeia de frio compromete a segurança do alimento: recuse ou registre e comunique.",
  tipo:"situacional",
  dica:"Temperatura de entrega é parâmetro de aceitação, não um detalhe."},
 {f:2,p:"Chegou uma entrega sem nota fiscal. O que fazer?",a:[
- "Aceitar e dar entrada depois quando a nota chegar",
- "Não dar entrada, registrar a ocorrência e comunicar o responsável",
- "Aceitar e colocar direto na prateleira",
+ "Aceitar e dar entrada depois, quando a nota chegar",
+ "Não dar entrada, registrar e comunicar o caso",
+ "Aceitar e colocar direto na prateleira de venda",
  "Assinar um recibo manuscrito por conta própria"],c:1,
  e:"Sem nota fiscal não se formaliza entrada: o procedimento é registrar e comunicar.",
  tipo:"situacional",
  dica:"A nota fiscal é o documento oficial de entrada. Sem ela, não se dá entrada."},
-{f:2,p:"Produto entregue em embalagem fracionada (caixa com 12 unidades) deve ser conferido:",a:[
- "Apenas pela quantidade de caixas",
- "Considerando a quantidade total de unidades e o código do produto",
+{f:2,p:"Produto em embalagem fracionada (12 unidades). Conferir:",a:[
+ "Apenas contando as caixas recebidas do fornecedor",
+ "Considerando a quantidade total de unidades",
  "Somente pela descrição do produto na nota",
- "Apenas pelo peso total"],c:1,
+ "Apenas pelo peso bruto total da carga"],c:1,
  e:"Em embalagens fracionadas, some as unidades por caixa para bater com a nota e o pedido.",
  tipo:"situacional",
  dica:"Sempre converta caixas em unidades — erro comum de recebimento."},
-{f:2,p:"O motorista insiste que as 2 caixas que faltam 'já foram entregues na semana passada'. Você não encontra registro. O correto é:",a:[
- "Aceitar a versão e dar entrada total",
- "Registrar a divergência, seguir o procedimento e comunicar o responsável",
- "Recusar toda a entrega",
- "Pedir para ele trazer as 2 caixas depois, sem registrar"],c:1,
+{f:2,p:"Motorista diz que as 2 caixas já foram entregues antes. Você não tem registro. Correto:",a:[
+ "Aceitar a versão e dar entrada total normalmente",
+ "Registrar a divergência e seguir o procedimento",
+ "Recusar toda a entrega por causa da dúvida",
+ "Pedir para ele trazer depois, sem registrar"],c:1,
  e:"Divergência sem registro vira prejuízo. Registre e siga o procedimento padrão.",
  tipo:"situacional",
  dica:"O que não está registrado, não existe para o controle de estoque."},
 
 /* ---------------- FASE 3 — CONFERÊNCIA (15) ---------------- */
 {f:3,p:"Conferir o pedido com a nota fiscal serve para:",a:[
- "Aumentar o preço de venda",
- "Garantir que o que foi pedido é exatamente o que está sendo entregue",
- "Reduzir o número de funcionários",
+ "Aumentar o preço final dos produtos na loja",
+ "Garantir que o entregue corresponde ao pedido",
+ "Reduzir o número de funcionários da equipe",
  "Definir a escala de trabalho do setor"],c:1,
  e:"A conferência pedido x nota fiscal garante que a entrega corresponde ao que foi solicitado."},
 {f:3,p:"Na conferência, o código de barras serve para:",a:[
- "Enfeitar a embalagem do produto",
- "Identificar o produto e evitar trocas e erros de cadastro",
- "Definir a data de validade",
- "Indicar o preço final ao consumidor"],c:1,
+ "Enfeitar a embalagem do produto para a venda",
+ "Identificar o item e evitar trocas e erros",
+ "Definir a data de validade de cada produto",
+ "Indicar o preço final cobrado do cliente"],c:1,
  e:"O código de barras identifica o item com precisão, evitando trocas e erros de lançamento."},
-{f:3,p:"Produto com data de validade mais próxima deve ser:",a:[
- "Colocado à frente, seguindo o critério de primeiro que vence, primeiro que sai",
- "Colocado no fundo da prateleira",
- "Descartado imediatamente",
- "Escondido do cliente"],c:0,
+{f:3,p:"Produto com validade mais próxima deve ser:",a:[
+ "Colocado à frente, seguindo o PVPS na gôndola",
+ "Colocado no fundo da prateleira por segurança",
+ "Descartado imediatamente, sem exceção",
+ "Escondido do cliente para não gerar dúvida"],c:0,
  e:"O produto que vence primeiro deve sair primeiro, para reduzir perdas por validade."},
-{f:3,p:"Uma 'avaria' em mercadoria significa:",a:[
- "Produto com preço errado no sistema",
- "Produto danificado, amassado, violado ou impróprio para venda",
- "Produto com boa saída de vendas",
- "Produto em promoção"],c:1,
+{f:3,p:"O que é avaria em mercadoria?",a:[
+ "Produto com preço trocado dentro do sistema",
+ "Produto danificado, amassado ou impróprio",
+ "Produto com grande saída de vendas no mês",
+ "Produto colocado em promoção temporária"],c:1,
  e:"Avaria é qualquer dano que comprometa a integridade ou a venda do produto."},
-{f:3,p:"Você encontra um produto diferente do que foi pedido. O correto é:",a:[
+{f:3,p:"Produto diferente do que foi pedido. O correto é:",a:[
  "Aceitar e colocar na prateleira normalmente",
  "Registrar a divergência e comunicar o responsável",
- "Vender mais barato para não perder",
+ "Vender mais barato para não perder a venda",
  "Guardar no depósito sem registrar nada"],c:1,
  e:"Produto diferente do pedido é divergência: deve ser registrado e comunicado ao responsável."},
 {f:3,p:"O que é conferência cega?",a:[
- "Conferir sem olhar para as caixas",
- "Conferir sem saber previamente a quantidade informada, aumentando a confiabilidade da contagem",
- "Conferir apenas produtos de limpeza",
- "Conferir junto com o cliente"],c:1,
+ "Conferir sem olhar para as caixas recebidas",
+ "Conferir sem saber antes a quantidade da nota",
+ "Conferir apenas os itens de limpeza da carga",
+ "Conferir junto com o cliente na área de venda"],c:1,
  e:"Na conferência cega o conferente não conhece a quantidade do documento, o que reduz a indução de erro."},
-{f:3,p:"Qual informação NÃO é necessária durante a conferência de mercadorias?",a:[
- "Quantidade recebida",
- "Descrição do produto",
+{f:3,p:"Qual informação NÃO é necessária na conferência?",a:[
+ "Quantidade total recebida do fornecedor",
+ "Descrição completa do produto na nota",
  "Nome do cliente que pretende comprar",
- "Data de validade"],c:2,
+ "Data de validade dos produtos recebidos"],c:2,
  e:"Dados de clientes não fazem parte da conferência de recebimento de mercadorias."},
 {f:3,p:"Embalagem com vazamento deve ser:",a:[
  "Colocada na prateleira junto com as demais",
- "Separada e registrada como avaria",
+ "Separada e registrada como avaria na loja",
  "Misturada com as outras para não perder",
- "Vendida rapidamente com desconto"],c:1,
+ "Vendida rapidamente com desconto especial"],c:1,
  e:"Embalagem com vazamento é avaria: deve ser separada, registrada e tratada conforme o procedimento."},
 {f:3,p:"Em relação ao momento, a conferência deve ser feita:",a:[
- "Depois de guardar tudo no depósito",
- "Antes de dar entrada no sistema e de armazenar a mercadoria",
+ "Depois de guardar tudo dentro do depósito",
+ "Antes de dar entrada e de armazenar o produto",
  "Somente quando houver reclamação do cliente",
- "No fechamento do mês"],c:1,
+ "No fechamento do mês, junto com o inventário"],c:1,
  e:"Conferir antes da entrada no sistema evita que erros sejam lançados e contaminem o estoque."},
-{f:3,p:"Por que as divergências de conferência devem ser registradas?",a:[
- "Ajudam a cobrar o fornecedor, corrigir o estoque e melhorar os processos",
- "Aumentam a burocracia sem nenhum motivo",
- "São exigidas apenas pelo setor fiscal",
- "Servem para informar o cliente"],c:0,
+{f:3,p:"Por que registrar divergências de conferência?",a:[
+ "Ajudam a cobrar o fornecedor e corrigir o estoque",
+ "Aumentam a burocracia sem motivo aparente",
+ "São exigidas apenas pelo setor fiscal da empresa",
+ "Servem apenas para informar o cliente final"],c:0,
  e:"O registro de divergências protege a loja, embasa cobranças e melhora o controle de estoque."},
 {f:3,p:"Faltou apenas 1 unidade em uma entrega grande. Você deve:",a:[
- "Ignorar por ser pequena",
- "Registrar do mesmo modo — toda divergência precisa ser documentada",
- "Anotar em papel solto e não comunicar",
- "Ajustar a nota fiscal na mão"],c:1,
+ "Ignorar por ser uma quantidade muito pequena",
+ "Registrar do mesmo modo, como qualquer outra",
+ "Anotar em papel solto e não comunicar nada",
+ "Ajustar a nota fiscal à mão, por conta própria"],c:1,
  e:"Divergência pequena também precisa ser registrada: padrão vale para qualquer quantidade.",
  tipo:"situacional",
  dica:"Toda divergência, por menor que seja, deve ser documentada."},
-{f:3,p:"Produto chegou com embalagem nova (redesenho do fabricante), mas mesmo código e mesma descrição. O correto é:",a:[
- "Recusar por não ser idêntico ao pedido",
- "Aceitar e dar entrada, registrando a observação",
- "Aceitar e alterar o cadastro do produto sem consultar",
- "Devolver e pedir o modelo antigo"],c:1,
+{f:3,p:"Produto chegou com embalagem nova, mesmo código e descrição. Correto:",a:[
+ "Recusar por não ser igual ao produto do pedido",
+ "Aceitar, dando entrada e registrando a observação",
+ "Aceitar e alterar o cadastro sem consultar antes",
+ "Devolver e exigir o modelo antigo do produto"],c:1,
  e:"Mudança visual de embalagem mantendo código/descrição não impede o recebimento — registre a observação.",
  tipo:"situacional",
  dica:"Código e descrição são a identidade do produto; a arte da embalagem pode mudar."},
-{f:3,p:"Durante a conferência, notou que alguns produtos estão com etiqueta de preço de outra rede varejista. O correto é:",a:[
+{f:3,p:"Produto com etiqueta de preço de outra rede varejista. Correto:",a:[
  "Colocar na prateleira, pois o código é o mesmo",
- "Separar, comunicar o responsável e seguir o procedimento interno",
- "Remover a etiqueta e expor",
- "Vender pelo preço da outra rede"],c:1,
+ "Separar, comunicar o responsável e seguir o procedimento",
+ "Remover a etiqueta e expor o produto normalmente",
+ "Vender pelo preço que está marcado na etiqueta"],c:1,
  e:"Etiqueta de outra rede indica produto desviado: separar e comunicar é obrigatório.",
  tipo:"situacional",
  dica:"Etiqueta estranha pode indicar origem irregular — sempre comunique."},
-{f:3,p:"A nota fiscal apresenta valor total diferente do pedido, mas a quantidade e os itens conferem. O correto é:",a:[
- "Aceitar e dar entrada; o valor é problema do financeiro, mas deve ser comunicado",
- "Recusar toda a entrega imediatamente",
- "Corrigir a nota com caneta",
- "Aceitar sem comunicar nada"],c:0,
+{f:3,p:"Nota com valor total diferente do pedido, mas itens certos. Correto:",a:[
+ "Aceitar, dar entrada e comunicar o setor financeiro",
+ "Recusar toda a entrega imediatamente por causa disso",
+ "Corrigir a nota com caneta e dar entrada normal",
+ "Aceitar sem comunicar nada a nenhum setor da loja"],c:0,
  e:"Divergência de valor não impede a entrada física, mas deve ser comunicada ao setor responsável.",
  tipo:"situacional",
  dica:"Separe divergência física (bloqueia) de divergência financeira (comunica)."},
-{f:3,p:"Chegaram amostras grátis junto com o pedido regular. O correto é:",a:[
- "Distribuir entre os funcionários",
- "Colocar na prateleira e vender",
- "Registrar a entrada conforme procedimento interno de bonificação",
- "Devolver ao motorista sem comunicar"],c:2,
+{f:3,p:"Chegaram amostras grátis junto ao pedido regular. Correto:",a:[
+ "Distribuir as amostras entre os funcionários da loja",
+ "Colocar na prateleira e vender pelo preço normal",
+ "Registrar a entrada pelo procedimento de bonificação",
+ "Devolver ao motorista, sem comunicar o ocorrido"],c:2,
  e:"Bonificações e amostras têm procedimento próprio de registro e destino — nunca são simplesmente 'dadas'.",
  tipo:"situacional",
  dica:"Amostras e bonificações precisam de registro formal."},
 
 /* ---------------- FASE 4 — ARMAZENAMENTO (15) ---------------- */
-{f:4,p:"Qual é o objetivo principal do armazenamento no depósito?",a:[
- "Guardar produtos de qualquer maneira, aproveitando o espaço",
- "Conservar os produtos com segurança, organização e fácil acesso",
- "Ocupar todo o espaço disponível",
- "Esconder os produtos do cliente"],c:1,
+{f:4,p:"Objetivo principal do armazenamento no depósito:",a:[
+ "Guardar produtos de qualquer forma no espaço",
+ "Conservar com segurança, organização e acesso",
+ "Ocupar todo o espaço disponível do depósito",
+ "Esconder os produtos para o cliente não ver"],c:1,
  e:"Armazenar bem é conservar o produto, garantir segurança e permitir acesso rápido para reposição."},
-{f:4,p:"O que significa endereçamento no depósito?",a:[
+{f:4,p:"O que é endereçamento no depósito?",a:[
  "Anotar o endereço do fornecedor na caixa",
- "Identificar e organizar cada produto em um local definido e conhecido",
- "Cadastrar o endereço da loja no sistema",
- "Registrar o endereço do cliente"],c:1,
+ "Identificar e organizar cada item num local",
+ "Cadastrar o endereço da loja dentro do sistema",
+ "Registrar o endereço residencial do cliente"],c:1,
  e:"Endereçamento é definir e identificar o local de cada item, agilizando a localização e o controle."},
 {f:4,p:"Produtos pesados devem ser armazenados:",a:[
  "Nas prateleiras mais altas, para liberar espaço",
- "Nas prateleiras mais baixas, para evitar acidentes e esforço excessivo",
- "No corredor de passagem",
- "Sobre os produtos frágeis"],c:1,
+ "Nas prateleiras mais baixas, por segurança",
+ "Nos corredores de passagem do depósito",
+ "Sobre os produtos frágeis, para firmar bem"],c:1,
  e:"Itens pesados ficam nas posições mais baixas por segurança e ergonomia."},
 {f:4,p:"Produtos de limpeza devem ser armazenados:",a:[
- "Junto com os alimentos, para facilitar",
+ "Junto com os alimentos, para facilitar a busca",
  "Separados dos alimentos, para evitar contaminação",
- "Na câmara fria",
- "Junto com os pães e padaria"],c:1,
+ "Dentro da câmara fria, junto com congelados",
+ "Junto com os pães e produtos de padaria"],c:1,
  e:"Produtos químicos devem ficar separados dos alimentos, evitando contaminação e riscos."},
-{f:4,p:"No depósito, a regra 'primeiro que vence, primeiro que sai' serve para:",a:[
- "Reduzir perdas por validade",
- "Aumentar o preço dos produtos",
- "Diminuir artificialmente o estoque",
- "Atrasar a reposição"],c:0,
+{f:4,p:"A regra \"primeiro que vence, primeiro que sai\" serve para:",a:[
+ "Reduzir as perdas por vencimento de produtos",
+ "Aumentar o preço final dos produtos na loja",
+ "Diminuir artificialmente o estoque da empresa",
+ "Atrasar a reposição na área de vendas"],c:0,
  e:"Essa regra garante giro correto e reduz perdas por vencimento."},
 {f:4,p:"O corredor de circulação do depósito deve estar:",a:[
- "Cheio de caixas para aproveitar melhor o espaço",
- "Livre, garantindo segurança e movimentação de pessoas e equipamentos",
- "Fechado com fita de isolamento",
- "Bloqueado por paletes"],c:1,
+ "Cheio de caixas, aproveitando melhor o espaço",
+ "Livre, garantindo segurança e movimentação",
+ "Fechado com fita de isolamento por precaução",
+ "Bloqueado por paletes empilhados até o teto"],c:1,
  e:"Corredores livres garantem segurança, agilidade e atendimento às normas de circulação."},
 {f:4,p:"Os paletes devem ser empilhados:",a:[
- "De qualquer maneira, quanto mais alto melhor",
- "Respeitando o limite de altura e a estabilidade da carga",
- "Sempre acima de três metros",
- "Sobre produtos frágeis"],c:1,
+ "De qualquer forma, quanto mais alto melhor",
+ "Respeitando limite de altura e estabilidade",
+ "Sempre acima de três metros de altura",
+ "Sobre produtos frágeis, para firmar a carga"],c:1,
  e:"Empilhamento deve respeitar limite de altura e estabilidade, evitando quedas e avarias."},
-{f:4,p:"Um produto armazenado em local incorreto causa:",a:[
- "Nenhum problema para a operação",
- "Dificuldade de localização, perdas e divergências de estoque",
- "Aumento automático das vendas",
- "Melhora na organização do depósito"],c:1,
+{f:4,p:"Produto armazenado em local incorreto causa:",a:[
+ "Nenhum problema real para a operação da loja",
+ "Dificuldade de localização e divergências",
+ "Aumento automático das vendas mensais da loja",
+ "Melhora na organização geral do depósito"],c:1,
  e:"Produto fora do endereço correto gera atraso, perdas e divergência entre físico e sistema."},
 {f:4,p:"A limpeza do depósito é importante porque:",a:[
- "Evita pragas, contaminação e acidentes de trabalho",
- "Deixa o ambiente apenas mais bonito",
- "Aumenta o preço dos produtos",
+ "Evita pragas, contaminação e acidentes",
+ "Deixa o ambiente apenas mais bonito e claro",
+ "Aumenta o preço final dos produtos da loja",
  "Reduz o número de funcionários necessários"],c:0,
  e:"Ambiente limpo e organizado evita pragas, contaminação de alimentos e acidentes."},
-{f:4,p:"Produtos que exigem refrigeração devem ser armazenados:",a:[
- "No depósito seco, junto aos demais",
- "Em câmaras frias ou equipamentos com temperatura controlada e adequada",
- "Perto dos produtos de limpeza",
+{f:4,p:"Produtos que exigem refrigeração devem ficar:",a:[
+ "No depósito seco, junto com os demais itens",
+ "Em câmaras frias, com temperatura controlada",
+ "Perto dos produtos de limpeza, no depósito",
  "Ao lado da porta de entrada, para facilitar"],c:1,
  e:"A cadeia de frio deve ser mantida com equipamentos e temperaturas adequadas a cada produto."},
-{f:4,p:"Chegou um item novo, sem local definido no depósito. O correto é:",a:[
- "Guardar em qualquer espaço livre",
- "Definir endereço, cadastrar no sistema e sinalizar o local",
- "Deixar no corredor até aparecer espaço",
- "Devolver ao fornecedor"],c:1,
+{f:4,p:"Item novo, sem local definido no depósito. O correto é:",a:[
+ "Guardar em qualquer espaço livre no momento",
+ "Definir endereço, cadastrar e sinalizar o local",
+ "Deixar no corredor até aparecer espaço livre",
+ "Devolver ao fornecedor, mesmo com pedido certo"],c:1,
  e:"Item sem endereço é item perdido. Antes de guardar, defina e cadastre o local.",
  tipo:"situacional",
  dica:"Sem endereço definido, o produto 'desaparece' do controle."},
-{f:4,p:"Um palete está bloqueando a passagem principal do depósito. A ação correta é:",a:[
- "Deixar até o fim do dia",
+{f:4,p:"Palete bloqueando a passagem principal. Ação correta:",a:[
+ "Deixar como está até o final do dia de trabalho",
  "Reorganizar imediatamente, liberando o corredor",
- "Colocar fita de isolamento ao redor",
- "Pedir para os colegas passarem por outro caminho"],c:1,
+ "Colocar fita de isolamento ao redor do palete",
+ "Pedir aos colegas passarem por outro caminho"],c:1,
  e:"Corredor bloqueado é risco de segurança e atrapalha a operação: deve ser liberado imediatamente.",
  tipo:"situacional",
  dica:"Corredor livre é regra de segurança, não conveniência."},
-{f:4,p:"Você nota sinais de possíveis pragas (roedores/insetos) no depósito. O correto é:",a:[
- "Ignorar, é comum em depósitos",
- "Comunicar o responsável, isolar a área e acionar o controle de pragas",
- "Colocar veneno por conta própria",
- "Apenas varrer o local"],c:1,
+{f:4,p:"Sinais de possíveis pragas no depósito. O correto é:",a:[
+ "Ignorar, porque é comum em qualquer depósito",
+ "Comunicar, isolar a área e acionar o controle",
+ "Colocar veneno por conta própria nas áreas",
+ "Apenas varrer o local para retirar os resíduos"],c:1,
  e:"Pragas exigem ação institucional: comunicação, isolamento e controle profissional.",
  tipo:"situacional",
  dica:"Controle de pragas é atividade especializada — não se resolve 'na vassoura'."},
-{f:4,p:"A temperatura da câmara fria está acima do ideal. O correto é:",a:[
- "Esperar o próximo turno",
- "Comunicar imediatamente o responsável e verificar/acionar manutenção",
- "Abrir a porta para ventilar",
- "Colocar mais produtos dentro"],c:1,
+{f:4,p:"Temperatura da câmara fria acima do ideal. O correto é:",a:[
+ "Esperar o próximo turno para resolver a questão",
+ "Comunicar imediatamente e acionar manutenção",
+ "Abrir a porta para ventilar o ambiente interno",
+ "Colocar mais produtos dentro, para compensar"],c:1,
  e:"Desvio de temperatura é urgente: pode comprometer todo o estoque refrigerado.",
  tipo:"situacional",
  dica:"Cadeia de frio não tolera atraso de comunicação."},
-{f:4,p:"Um produto de grande volume não cabe na prateleira padrão do depósito. O correto é:",a:[
- "Deixá-lo no corredor",
- "Definir local específico adequado ao porte e à movimentação do item",
- "Devolver ao fornecedor",
- "Colocar sobre outros paletes"],c:1,
+{f:4,p:"Produto grande não cabe na prateleira padrão. O correto é:",a:[
+ "Deixá-lo no corredor até encontrar uma solução",
+ "Definir local adequado ao porte e à movimentação",
+ "Devolver ao fornecedor, mesmo com pedido certo",
+ "Colocar sobre outros paletes, na área de estoque"],c:1,
  e:"Itens de grande porte precisam de área dedicada, nunca improvisada em corredores.",
  tipo:"situacional",
  dica:"Cada produto tem local adequado; forçar nunca é a melhor escolha."},
 
 /* ---------------- FASE 5 — REPOSIÇÃO (15) ---------------- */
 {f:5,p:"O que é ruptura no ponto de venda?",a:[
- "Quando o produto está em falta na prateleira para o cliente",
- "Quando há produtos em excesso na gôndola",
- "Quando o preço está errado no sistema",
- "Quando a prateleira está limpa e organizada"],c:0,
+ "Produto em falta na prateleira para o cliente",
+ "Produto em excesso exposto na gôndola da loja",
+ "Preço marcado errado no sistema da empresa",
+ "Prateleira limpa e organizada pelo repositor"],c:0,
  e:"Ruptura é a ausência do produto no ponto de venda, impedindo a compra pelo cliente."},
 {f:5,p:"Reposição é o processo de:",a:[
  "Retirar produtos da prateleira para o depósito",
- "Abastecer a prateleira com produtos vindos do estoque",
- "Trocar os preços dos produtos",
- "Contar o estoque do depósito"],c:1,
+ "Abastecer a prateleira com produtos do estoque",
+ "Trocar os preços dos produtos na gôndola",
+ "Contar o estoque disponível dentro do depósito"],c:1,
  e:"Reposição é levar o produto do estoque para a área de venda, mantendo a prateleira abastecida."},
-{f:5,p:"Ao repor produtos na prateleira, o critério de validade correto é:",a:[
+{f:5,p:"Ao repor, o critério de validade correto é:",a:[
  "Colocar os produtos mais novos na frente",
  "Colocar os que vencem primeiro na frente",
- "Misturar aleatoriamente os lotes",
- "Colocar os mais caros na frente"],c:1,
+ "Misturar aleatoriamente os lotes recebidos",
+ "Colocar sempre os mais caros na frente"],c:1,
  e:"O produto com validade mais próxima vai à frente, garantindo giro e reduzindo perdas."},
-{f:5,p:"Produto em falta na prateleira, mas disponível no estoque, indica:",a:[
- "Ruptura total do item",
- "Falha de reposição",
- "Erro de cadastro do produto",
- "Excesso de estoque"],c:1,
+{f:5,p:"Produto em falta na prateleira, mas no estoque. Isso indica:",a:[
+ "Ruptura total do item dentro da loja",
+ "Falha de reposição no ponto de venda",
+ "Erro de cadastro do produto no sistema",
+ "Excesso de mercadoria dentro do depósito"],c:1,
  e:"Se o item existe no estoque mas não na prateleira, a falha é de reposição, não de estoque."},
 {f:5,p:"Excesso de produto na prateleira pode causar:",a:[
- "Dificuldade de manuseio, queda de produtos e perda por validade",
- "Aumento automático das vendas",
- "Melhor controle de estoque",
- "Redução das perdas"],c:0,
+ "Dificuldade de manuseio e queda de produtos",
+ "Aumento automático das vendas mensais da loja",
+ "Melhora no controle do estoque do setor",
+ "Redução das perdas por validade na loja"],c:0,
  e:"Prateleira sobrecarregada dificulta o manuseio, derruba produtos e aumenta perdas."},
-{f:5,p:"Para que serve uma ponta de gôndola (frente de loja)?",a:[
- "Guardar o estoque extra do depósito",
- "Destacar produtos e estimular a venda",
- "Esconder produtos de baixa saída",
- "Armazenar produtos vencidos"],c:1,
+{f:5,p:"Para que serve a ponta de gôndola?",a:[
+ "Guardar o estoque extra vindo do depósito",
+ "Destacar produtos e estimular a venda deles",
+ "Esconder produtos com baixa saída de venda",
+ "Armazenar produtos vencidos dentro da loja"],c:1,
  e:"A ponta de gôndola é um espaço de destaque, usado para estimular a venda de itens selecionados."},
-{f:5,p:"Ao identificar uma prateleira vazia durante a ronda, o operador deve:",a:[
- "Ignorar e continuar o trabalho",
- "Verificar o estoque e providenciar a reposição o quanto antes",
- "Esperar o cliente reclamar",
+{f:5,p:"Ao notar prateleira vazia durante a ronda, o operador deve:",a:[
+ "Ignorar a falha e continuar o trabalho normal",
+ "Verificar o estoque e providenciar a reposição",
+ "Esperar algum cliente reclamar da falta do item",
  "Colocar outro produto no lugar para preencher"],c:1,
  e:"Identificada a falha, verifica-se o estoque e repõe-se rapidamente, evitando ruptura."},
 {f:5,p:"A etiqueta de preço na prateleira deve:",a:[
- "Estar sempre correta, legível e visível, conforme o cadastro do sistema",
+ "Estar correta, legível, conforme o cadastro",
  "Ser colocada em qualquer lugar da gôndola",
- "Ficar apenas no depósito",
- "Ser escrita à mão livre pelo repositor"],c:0,
+ "Ficar guardada apenas dentro do depósito",
+ "Ser escrita à mão pelo repositor do setor"],c:0,
  e:"Preço correto e visível é obrigação legal e evita conflitos e erros no caixa."},
-{f:5,p:"Produtos com boa saída (alta rotação) devem ser:",a:[
- "Repostos com mais frequência e em maior quantidade",
- "Repostos com menos frequência",
- "Retirados da área de venda",
- "Colocados no fundo da loja"],c:0,
+{f:5,p:"Produtos com boa saída devem ser:",a:[
+ "Repostos com mais frequência e quantidade",
+ "Repostos com menos frequência e quantidade",
+ "Retirados completamente da área de venda",
+ "Colocados sempre no fundo da loja"],c:0,
  e:"Itens de alta rotação precisam de reposição mais frequente para não faltarem."},
-{f:5,p:"Repor produtos durante o horário de pico exige:",a:[
- "Fechar o corredor para os clientes",
- "Cuidado com a circulação dos clientes, usando carrinhos e caixas de forma segura",
+{f:5,p:"Repor produtos em horário de pico exige:",a:[
+ "Fechar o corredor para os clientes passarem",
+ "Cuidado com a circulação de clientes na loja",
  "Correr pelo corredor para terminar rápido",
- "Deixar as caixas no chão do corredor"],c:1,
+ "Deixar as caixas no chão do corredor da loja"],c:1,
  e:"Em horário de pico, a reposição deve respeitar o fluxo de clientes e as normas de segurança."},
-{f:5,p:"Você está repondo o setor de bebidas e percebe que o refrigerante está em falta na prateleira, mas o sistema indica 30 unidades. O que fazer?",a:[
- "Ignorar, pois o sistema está sempre certo",
- "Ir ao depósito, localizar o produto, conferir o físico e repor",
- "Pedir mais ao fornecedor imediatamente",
+{f:5,p:"Refrigerante em falta na prateleira, mas sistema indica 30 unidades. Fazer:",a:[
+ "Ignorar, pois o sistema está sempre correto",
+ "Ir ao depósito, localizar, conferir e repor",
+ "Pedir mais ao fornecedor de forma imediata",
  "Colocar outro produto no lugar para preencher"],c:1,
  e:"Antes de pedir mais, localize o produto e confira o físico: pode ser falha de reposição ou endereçamento.",
  tipo:"situacional",
  dica:"Sistema pode estar certo, mas o produto pode estar mal endereçado."},
-{f:5,p:"Um produto está em promoção e teve grande procura. A prateleira está vazia. O correto é:",a:[
- "Aguardar o próximo ciclo de reposição",
- "Repor com mais frequência e reabastecer a gôndola de destaque",
- "Retirar a promoção",
- "Deixar o cliente procurar no depósito"],c:1,
+{f:5,p:"Produto em promoção com prateleira vazia. O correto é:",a:[
+ "Aguardar o próximo ciclo programado de reposição",
+ "Repor com mais frequência e reabastecer o destaque",
+ "Retirar a promoção por causa da alta procura",
+ "Pedir ao cliente procurar direto no depósito"],c:1,
  e:"Promoção ativa exige reforço de reposição — caso contrário gera frustração e perde-se venda.",
  tipo:"situacional",
  dica:"Promoção aumenta o giro: a reposição precisa acompanhar."},
-{f:5,p:"Durante a reposição, você encontra um produto vencido misturado aos válidos. O correto é:",a:[
- "Deixar na prateleira e repor por cima",
- "Retirar, registrar como perda e seguir o procedimento",
- "Vender com desconto",
- "Devolver ao fornecedor sem comunicar"],c:1,
+{f:5,p:"Encontrado produto vencido misturado aos válidos. Correto:",a:[
+ "Deixar na prateleira e repor por cima dele",
+ "Retirar, registrar como perda e seguir procedimento",
+ "Vender o produto com desconto para não perder",
+ "Devolver ao fornecedor, sem comunicar o caso"],c:1,
  e:"Produto vencido é impróprio: retirar, registrar e destinar corretamente.",
  tipo:"situacional",
  dica:"Vencido é perda — não é desconto nem 'sai na reposição'."},
-{f:5,p:"Seu carrinho de reposição está atrapalhando o corredor em horário de pico. O correto é:",a:[
- "Deixar onde está, os clientes desviam",
- "Reposicionar o carrinho em local seguro fora do fluxo",
- "Terminar a reposição correndo",
- "Deixar as caixas no chão ao lado"],c:1,
+{f:5,p:"Carrinho de reposição atrapalhando corredor em pico. Correto:",a:[
+ "Deixar onde está, os clientes conseguem desviar",
+ "Reposicionar em local seguro, fora do fluxo",
+ "Terminar a reposição correndo pelo corredor",
+ "Deixar as caixas no chão, ao lado do carrinho"],c:1,
  e:"Segurança e experiência do cliente vêm primeiro: posicione o carrinho fora do fluxo.",
  tipo:"situacional",
  dica:"Reposição não pode obstruir o corredor nem expor o cliente a risco."},
-{f:5,p:"A prateleira vazia e o estoque com divergência não localizam o produto. O correto é:",a:[
- "Colocar outro produto no lugar",
- "Comunicar a falha, registrar a ocorrência e seguir o procedimento",
- "Deixar vazio e continuar o trabalho",
- "Retirar a etiqueta de preço"],c:1,
+{f:5,p:"Prateleira vazia, divergência e produto não localizado. Correto:",a:[
+ "Colocar outro produto no lugar, para preencher",
+ "Comunicar a falha, registrar e seguir o procedimento",
+ "Deixar vazio e continuar o trabalho normalmente",
+ "Retirar a etiqueta de preço da prateleira vazia"],c:1,
  e:"Sem produto, comunique e registre: a causa precisa ser investigada (não basta 'tapar o buraco').",
  tipo:"situacional",
  dica:"Prateleira vazia é sintoma — investigue a causa raiz."},
 
 /* ---------------- FASE 6 — INVENTÁRIO (15) ---------------- */
 {f:6,p:"O que é inventário em um supermercado?",a:[
- "A contagem física dos produtos comparada com o estoque do sistema",
- "A venda de produtos no caixa",
- "A compra de mercadorias do fornecedor",
- "A limpeza do depósito"],c:0,
+ "A contagem física comparada com o estoque do sistema",
+ "A venda de produtos registrada no caixa da loja",
+ "A compra de mercadorias direto do fornecedor",
+ "A limpeza completa do depósito e da área de venda"],c:0,
  e:"Inventário é a contagem física confrontada com o estoque registrado no sistema."},
 {f:6,p:"Divergência de inventário ocorre quando:",a:[
- "O estoque físico é diferente do estoque registrado no sistema",
- "O preço está correto na gôndola",
- "O produto está bem exposto na prateleira",
- "O fornecedor entrega no prazo"],c:0,
+ "O estoque físico difere do estoque registrado",
+ "O preço está correto na etiqueta da prateleira",
+ "O produto está bem exposto na área de venda",
+ "O fornecedor fez a entrega dentro do prazo"],c:0,
  e:"Divergência é a diferença entre a quantidade contada e a quantidade registrada."},
 {f:6,p:"São causas comuns de divergência de inventário:",a:[
- "Erros de cadastro, avarias não registradas, furtos e falhas no recebimento",
- "Boa organização do depósito",
- "Uso correto do sistema de gestão",
- "Conferência bem executada"],c:0,
+ "Erros de cadastro, avarias, furtos e falhas",
+ "Boa organização das prateleiras do depósito",
+ "Uso correto do sistema de gestão da empresa",
+ "Conferência bem executada no recebimento"],c:0,
  e:"Falhas de cadastro, avarias, furtos e erros de recebimento são as principais causas de divergência."},
 {f:6,p:"Antes de iniciar a contagem do inventário é importante:",a:[
- "Organizar e identificar os produtos e definir claramente a área a ser contada",
- "Vender tudo primeiro",
- "Comprar mais produtos",
- "Fechar a loja definitivamente"],c:0,
+ "Organizar, identificar e delimitar a área a contar",
+ "Vender todos os produtos antes de começar",
+ "Comprar mais produtos para abastecer a loja",
+ "Fechar a loja para sempre no dia da contagem"],c:0,
  e:"Organização e delimitação da área evitam recontagem e erros na contagem."},
-{f:6,p:"Contar o mesmo produto duas vezes no inventário pode causar:",a:[
- "Divergência positiva, com quantidade maior que a real",
- "Nenhum problema para o resultado",
- "Redução do estoque físico",
- "Melhora na acurácia da contagem"],c:0,
+{f:6,p:"Contar o mesmo produto duas vezes pode causar:",a:[
+ "Divergência positiva, inflando o estoque real",
+ "Nenhum problema real para o resultado final",
+ "Redução do estoque físico contado na loja",
+ "Melhora na acurácia da contagem feita"],c:0,
  e:"Contagem duplicada infla o resultado e gera divergência positiva, mascarando perdas."},
 {f:6,p:"No contexto do supermercado, perdas incluem:",a:[
- "Avarias, vencimento, furtos e erros operacionais",
- "Somente os produtos vendidos",
- "Somente os produtos comprados",
- "Apenas produtos em promoção"],c:0,
+ "Avarias, vencimentos, furtos e erros operacionais",
+ "Somente os produtos vendidos durante o mês",
+ "Somente os produtos comprados do fornecedor",
+ "Apenas os produtos colocados em promoção"],c:0,
  e:"Perdas são quebras, vencimentos, furtos e falhas operacionais que reduzem o estoque sem venda."},
-{f:6,p:"Após identificar divergências no inventário, o correto é:",a:[
- "Ajustar o sistema com base na contagem validada e investigar as causas",
- "Ignorar as diferenças encontradas",
- "Ajustar o sistema sem conferir nada",
- "Responsabilizar um funcionário imediatamente"],c:0,
+{f:6,p:"Após identificar divergências, o correto é:",a:[
+ "Ajustar com base na contagem validada e investigar",
+ "Ignorar todas as diferenças encontradas na loja",
+ "Ajustar o sistema sem conferir nada antes",
+ "Responsabilizar um funcionário de imediato"],c:0,
  e:"O ajuste deve ser feito após validação da contagem, e as causas precisam ser investigadas."},
-{f:6,p:"Produtos vencidos encontrados durante o inventário devem ser:",a:[
- "Retirados da venda, registrados como perda e destinados corretamente",
- "Colocados de volta na prateleira",
- "Vendidos com desconto",
- "Misturados aos produtos novos"],c:0,
+{f:6,p:"Produtos vencidos no inventário devem ser:",a:[
+ "Retirados, registrados como perda e destinados",
+ "Colocados de volta na prateleira de venda",
+ "Vendidos com desconto para não haver perda",
+ "Misturados aos produtos novos na prateleira"],c:0,
  e:"Produto vencido é impróprio para consumo: deve ser retirado, registrado e destinado corretamente."},
-{f:6,p:"O inventário rotativo (ou parcial) consiste em:",a:[
- "Contar apenas alguns setores ou grupos de produtos por vez, de forma programada",
+{f:6,p:"O inventário rotativo (parcial) consiste em:",a:[
+ "Contar alguns setores por vez, de forma programada",
  "Contar a loja inteira uma única vez por ano",
- "Contar somente o depósito",
- "Contar apenas os produtos mais caros"],c:0,
+ "Contar somente o depósito, sem a área de venda",
+ "Contar apenas os produtos mais caros da loja"],c:0,
  e:"O inventário rotativo distribui a contagem ao longo do tempo, por setor ou grupo de itens."},
 {f:6,p:"O inventário ajuda a gestão porque:",a:[
- "Fornece dados reais para compras, controle de perdas e tomada de decisão",
- "Aumenta o preço dos produtos automaticamente",
- "Reduz o número de clientes na loja",
- "Diminui a variedade de produtos"],c:0,
+ "Dá dados reais para compras e redução de perdas",
+ "Aumenta o preço final dos produtos da loja",
+ "Reduz o número de clientes que frequentam",
+ "Diminui a variedade de produtos oferecida"],c:0,
  e:"Com dados reais de estoque, a gestão compra melhor, reduz perdas e decide com segurança."},
-{f:6,p:"Durante a contagem, um cliente quer comprar um produto que está sendo inventariado. O correto é:",a:[
- "Recusar a venda e continuar a contagem",
- "Atender o cliente, registrar a venda e ajustar a contagem do item",
- "Pedir para ele voltar depois",
- "Vender sem registrar e continuar"],c:1,
+{f:6,p:"Cliente quer comprar produto que está sendo inventariado. Correto:",a:[
+ "Recusar a venda e continuar a contagem normal",
+ "Atender o cliente, registrar a venda e ajustar a contagem",
+ "Pedir para ele voltar depois, sem atender agora",
+ "Vender sem registrar e continuar a contagem"],c:1,
  e:"A venda deve ser registrada e o item excluído/ajustado da contagem em andamento.",
  tipo:"situacional",
  dica:"Venda durante inventário não pode entrar na contagem — precisa ser isolada."},
-{f:6,p:"Um produto foi encontrado durante a contagem sem cadastro no sistema. O correto é:",a:[
- "Contar apenas fisicamente e depois cadastrar",
- "Separar, comunicar e providenciar o cadastro antes do ajuste",
- "Descartar o produto",
- "Colocar na prateleira sem cadastro"],c:1,
+{f:6,p:"Produto sem cadastro encontrado na contagem. Correto:",a:[
+ "Contar apenas fisicamente e cadastrar depois",
+ "Separar, comunicar e providenciar o cadastro",
+ "Descartar o produto para não gerar confusão",
+ "Colocar na prateleira, mesmo sem cadastro"],c:1,
  e:"Sem cadastro não há como dar entrada correta: cadastre primeiro, ajuste depois.",
  tipo:"situacional",
  dica:"Sem cadastro, o item é invisível para o sistema."},
-{f:6,p:"Divergência negativa alta em um único setor, com boa organização geral, sugere:",a:[
- "Problema sistêmico da loja inteira",
- "Causa localizada — possivelmente furto, erro de recebimento ou falha operacional do setor",
- "Erro do sistema central",
- "Erro da contagem geral"],c:1,
+{f:6,p:"Divergência negativa alta em um só setor, com boa organização geral. Sugere:",a:[
+ "Problema sistêmico que afeta toda a loja",
+ "Causa localizada — furto, erro ou falha do setor",
+ "Erro do sistema central de gestão da empresa",
+ "Erro de contagem geral feita pela equipe"],c:1,
  e:"Divergência localizada aponta para causa local: investigue recebimento, saída e segurança do setor.",
  tipo:"situacional",
  dica:"Onde está a divergência, está a pista da causa."},
-{f:6,p:"A equipe tem apenas metade do tempo previsto para o inventário. A melhor conduta é:",a:[
+{f:6,p:"Metade do tempo previsto para o inventário. Melhor conduta:",a:[
  "Contar tudo rápido, mesmo com risco de erro",
- "Priorizar itens de maior valor e maior giro e comunicar a limitação",
- "Cancelar o inventário",
- "Contar apenas o depósito"],c:1,
+ "Priorizar itens de maior valor e maior giro",
+ "Cancelar o inventário até ter tempo disponível",
+ "Contar apenas o depósito, ignorando a loja"],c:1,
  e:"Faltando tempo, priorize o que mais impacta (valor/giro) e comunique formalmente a limitação.",
  tipo:"situacional",
  dica:"Inventário é sobre precisão; quando o tempo é curto, priorize o que mais importa."},
 {f:6,p:"Após o ajuste de inventário, é recomendável:",a:[
- "Registrar as causas prováveis e propor ações corretivas",
- "Apenas seguir em frente",
+ "Registrar as causas prováveis e propor correções",
+ "Apenas seguir em frente, sem maiores análises",
  "Aumentar o preço dos produtos com divergência",
- "Responsabilizar o fornecedor sem provas"],c:0,
+ "Responsabilizar o fornecedor, sem nenhuma prova"],c:0,
  e:"Registrar causas e propor correções evita que a mesma divergência volte no próximo inventário.",
  tipo:"situacional",
  dica:"Inventário sem análise de causa vira 'contagem de rotina' que não corrige nada."},
 
 /* ---------------- FASE 7 — PROBLEMAS OPERACIONAIS (15) ---------------- */
-{f:7,p:"Você está repondo o setor de bebidas e percebe que o refrigerante está em falta na prateleira, mas o sistema indica 30 unidades no estoque. O que fazer?",a:[
- "Ignorar, pois o sistema está sempre certo",
- "Ir ao depósito, localizar o produto, conferir a quantidade física e repor",
- "Pedir mais ao fornecedor imediatamente",
- "Colocar outro produto no lugar para preencher o espaço"],c:1,
+{f:7,p:"Refrigerante em falta na prateleira, mas sistema indica 30 unidades. O que fazer?",a:[
+ "Ignorar, porque o sistema está sempre certo",
+ "Ir ao depósito, localizar, conferir e repor",
+ "Pedir mais ao fornecedor de forma imediata",
+ "Colocar outro produto no lugar para preencher"],c:1,
  e:"Antes de pedir mais, é preciso localizar o produto e conferir o físico: pode ser falha de reposição ou endereçamento."},
-{f:7,p:"Durante o recebimento, você nota que 5 caixas de leite estão com a embalagem estufada. Qual a ação correta?",a:[
- "Armazenar normalmente, pois a embalagem está fechada",
- "Recusar ou separar o produto, registrar a ocorrência e comunicar o responsável",
+{f:7,p:"Cinco caixas de leite com embalagem estufada. Ação correta:",a:[
+ "Armazenar normalmente, pois está fechada",
+ "Recusar, registrar ocorrência e comunicar",
  "Colocar na câmara fria e vender depois",
- "Misturar com os produtos bons para não perder"],c:1,
+ "Misturar com os produtos bons da prateleira"],c:1,
  e:"Embalagem estufada indica produto deteriorado: deve ser recusado/separado e a ocorrência registrada."},
-{f:7,p:"Um produto muito vendido está com excesso de estoque no depósito, ocupando espaço. O que fazer?",a:[
- "Comprar ainda mais para garantir",
- "Verificar a demanda, negociar promoção ou ponta de gôndola e ajustar os próximos pedidos",
- "Descartar o produto",
+{f:7,p:"Produto muito vendido com excesso no depósito. O que fazer?",a:[
+ "Comprar ainda mais para garantir o abastecimento",
+ "Verificar demanda, promover e ajustar pedidos",
+ "Descartar o produto para liberar mais espaço",
  "Esconder o produto no fundo do depósito"],c:1,
  e:"Excesso de um item de giro exige ação comercial (promoção/destaque) e revisão dos pedidos."},
-{f:7,p:"O sistema mostra 100 unidades, mas a contagem física aponta 85. Qual o primeiro passo?",a:[
- "Ajustar direto no sistema",
- "Recontar e investigar as possíveis causas antes de ajustar",
- "Ignorar a diferença",
- "Informar o cliente sobre a diferença"],c:1,
+{f:7,p:"Sistema mostra 100 unidades, contagem física aponta 85. Primeiro passo:",a:[
+ "Ajustar direto no sistema para igualar ao físico",
+ "Recontar e investigar as causas antes de ajustar",
+ "Ignorar a diferença até o próximo inventário",
+ "Informar o cliente sobre a diferença encontrada"],c:1,
  e:"Nunca se ajusta sem recontar e investigar: a diferença pode ter causa identificável."},
-{f:7,p:"Você encontra caixas de produto de limpeza armazenadas junto com alimentos. O que fazer?",a:[
- "Deixar como está, não há problema",
- "Separar imediatamente os produtos, seguindo as normas de armazenamento",
- "Vender mais rápido para acabar o estoque",
- "Colocar tudo em promoção"],c:1,
+{f:7,p:"Caixas de limpeza armazenadas junto com alimentos. O que fazer?",a:[
+ "Deixar como está, pois não há problema real",
+ "Separar imediatamente, seguindo as normas",
+ "Vender mais rápido para acabar com o estoque",
+ "Colocar todos os produtos em promoção"],c:1,
  e:"Produtos químicos não podem ficar junto a alimentos: risco de contaminação. Separe imediatamente."},
-{f:7,p:"Um produto sem identificação e sem etiqueta é encontrado no depósito. Qual a ação correta?",a:[
- "Vender pelo preço que parecer razoável",
- "Identificar o produto, verificar o cadastro e regularizar a identificação antes de expor",
- "Descartar o produto",
- "Levar para outro setor e esquecer"],c:1,
+{f:7,p:"Produto sem identificação encontrado no depósito. Ação correta:",a:[
+ "Vender pelo preço que parecer mais razoável",
+ "Identificar, verificar cadastro e regularizar",
+ "Descartar o produto para não gerar confusão",
+ "Levar para outro setor e esquecer o assunto"],c:1,
  e:"Produto sem identificação deve ser identificado e regularizado no sistema antes de ir para a venda."},
-{f:7,p:"Um produto está cadastrado com o código de barras errado, causando erro no caixa. O que fazer?",a:[
- "Ignorar, o problema é do caixa",
- "Comunicar o responsável e corrigir o cadastro do produto no sistema",
- "Passar o produto manualmente para sempre",
+{f:7,p:"Produto com código de barras errado, causando erro no caixa. O que fazer?",a:[
+ "Ignorar, pois o problema é do operador do caixa",
+ "Comunicar e corrigir o cadastro do produto",
+ "Passar manualmente no caixa para sempre",
  "Retirar o produto da loja definitivamente"],c:1,
  e:"Erro de cadastro deve ser corrigido na origem, no sistema, e não contornado no caixa."},
-{f:7,p:"Durante o horário de pico, a prateleira de pães está vazia e o estoque também. O que fazer?",a:[
- "Informar o responsável, verificar a possibilidade de pedido urgente e sinalizar a falta",
- "Deixar vazio sem avisar ninguém",
+{f:7,p:"Prateleira de pães vazia e estoque zerado. O que fazer?",a:[
+ "Informar o responsável, verificar pedido urgente e sinalizar",
+ "Deixar vazio sem avisar ninguém da equipe",
  "Colocar outro produto no lugar e não registrar",
- "Fechar o setor de padaria"],c:0,
+ "Fechar o setor de padaria até o próximo dia"],c:0,
  e:"Faltou produto: comunique, busque solução com o responsável e sinalize a ruptura."},
-{f:7,p:"Você percebe que as caixas de um palete estão instáveis e podem cair. O que fazer?",a:[
+{f:7,p:"Caixas de um palete instáveis, com risco de queda. O que fazer?",a:[
  "Continuar trabalhando normalmente ao lado",
- "Interromper a atividade, sinalizar a área e reorganizar o palete com segurança",
- "Empilhar mais caixas para firmar",
- "Avisar apenas no fim do expediente"],c:1,
+ "Interromper, sinalizar e reorganizar com segurança",
+ "Empilhar mais caixas para firmar a carga",
+ "Avisar apenas no final do expediente"],c:1,
  e:"Risco de queda é prioridade de segurança: pare, isole a área e reorganize a carga."},
-{f:7,p:"Uma entrega chegou com 10 dias de validade restante, mas o padrão da loja aceita no mínimo 30 dias. O que fazer?",a:[
- "Aceitar e tentar vender rápido",
- "Registrar a divergência e seguir o procedimento (recusa ou negociação com o fornecedor)",
+{f:7,p:"Entrega com 10 dias de validade, mas padrão aceita 30 dias. O que fazer?",a:[
+ "Aceitar e tentar vender rápido na prateleira",
+ "Registrar divergência e seguir o procedimento",
  "Esconder a validade para não haver problema",
  "Colocar na prateleira sem comunicar ninguém"],c:1,
  e:"Fora do padrão de validade, aplica-se o procedimento: registrar, comunicar e recusar ou negociar."},
-{f:7,p:"Um cliente reclama que encontrou produto vencido na prateleira. A conduta correta é:",a:[
- "Ignorar, pois foi um caso isolado",
- "Pedir desculpas, retirar o produto da venda, verificar o lote inteiro e registrar a ocorrência",
- "Oferecer desconto e devolver o produto à prateleira",
- "Dizer que o cliente se enganou"],c:1,
+{f:7,p:"Cliente reclamou de produto vencido na prateleira. Conduta correta:",a:[
+ "Ignorar, pois foi um caso isolado na loja",
+ "Retirar o produto, verificar o lote e registrar",
+ "Oferecer desconto e devolver para a prateleira",
+ "Dizer que o cliente se enganou na avaliação"],c:1,
  e:"Reclamação de vencido é falha grave: retire o produto, verifique o lote e registre o ocorrido.",
  tipo:"situacional",
  dica:"Vencido na prateleira é falha do processo — trate como ocorrência formal."},
-{f:7,p:"Você observa um colega armazenando produtos de limpeza junto com alimentos. O correto é:",a:[
- "Ignorar, cada um cuida do seu setor",
- "Conversar com o colega, orientar e comunicar o responsável se necessário",
- "Fazer o mesmo para não gerar conflito",
- "Apenas reclamar depois com a chefia"],c:1,
+{f:7,p:"Colega armazenando limpeza junto com alimentos. O correto é:",a:[
+ "Ignorar, pois cada um cuida do seu próprio setor",
+ "Orientar o colega e comunicar o responsável",
+ "Fazer o mesmo para não gerar conflito na equipe",
+ "Reclamar depois com a chefia, sem orientar"],c:1,
  e:"Orientar com respeito e comunicar o responsável é o procedimento correto — todos respondem pela segurança.",
  tipo:"situacional",
  dica:"Segurança do alimento é responsabilidade coletiva, não de um setor só."},
-{f:7,p:"O supervisor pede para você 'dar um jeitinho' em uma divergência de estoque, sem investigar. O correto é:",a:[
- "Ajustar conforme solicitado",
- "Recusar o ajuste sem investigação e seguir o procedimento formal",
- "Ajustar parcialmente",
- "Registrar como perda desconhecida"],c:1,
+{f:7,p:"Supervisor pede \"um jeitinho\" em divergência sem investigar. O correto é:",a:[
+ "Ajustar conforme solicitado pelo supervisor",
+ "Recusar o ajuste e seguir o procedimento formal",
+ "Ajustar parcialmente, para agradar o supervisor",
+ "Registrar como perda desconhecida e ajustar"],c:1,
  e:"Ajuste sem investigação é prática incorreta; siga o procedimento formal e registre a solicitação.",
  tipo:"situacional",
  dica:"Procedimento existe para proteger a operação — inclusive de pedidos informais."},
-{f:7,p:"O sistema ficou fora do ar durante o recebimento. O correto é:",a:[
- "Não receber nada",
- "Fazer a conferência física completa, registrar em formulário manual e dar entrada quando o sistema voltar",
- "Receber sem conferir e lançar tudo depois",
- "Devolver toda a mercadoria"],c:1,
+{f:7,p:"Sistema fora do ar durante o recebimento. O correto é:",a:[
+ "Não receber nada até o sistema voltar a funcionar",
+ "Conferir, registrar em formulário e dar entrada depois",
+ "Receber sem conferir e lançar tudo quando voltar",
+ "Devolver toda a mercadoria para o fornecedor"],c:1,
  e:"Falha do sistema não elimina a conferência: registre manualmente e lance quando possível.",
  tipo:"situacional",
  dica:"Sistema cai, processo continua — com registro alternativo."},
-{f:7,p:"Chegou um produto novo, ainda não cadastrado, mas há pedido de cliente. O correto é:",a:[
- "Vender mesmo sem cadastro",
- "Providenciar o cadastro e a precificação antes de expor, comunicando o cliente",
- "Deixar em depósito indefinidamente",
- "Devolver ao fornecedor"],c:1,
+{f:7,p:"Produto novo, sem cadastro, com cliente interessado. O correto é:",a:[
+ "Vender mesmo sem cadastro no sistema da loja",
+ "Providenciar cadastro e preço antes de expor",
+ "Deixar em depósito indefinidamente até regularizar",
+ "Devolver ao fornecedor para não gerar problema"],c:1,
  e:"Sem cadastro e preço definido, não se expõe produto: regularize e comunique o cliente sobre o prazo.",
  tipo:"situacional",
  dica:"Cadastro e precificação são pré-requisitos para expor qualquer item."},
 
 /* ---------------- FASE 8 — MISSÃO FINAL (15) ---------------- */
-{f:8,p:"Qual sequência representa corretamente o fluxo da mercadoria na loja?",a:[
- "Recebimento → conferência → armazenamento → reposição → venda",
- "Venda → recebimento → conferência → armazenamento",
- "Reposição → recebimento → venda → conferência",
- "Armazenamento → venda → recebimento → conferência"],c:0,
+{f:8,p:"Sequência correta do fluxo da mercadoria:",a:[
+ "Recebimento, conferência, armazenamento, reposição e venda",
+ "Venda, recebimento, conferência, armazenamento e estoque",
+ "Reposição, recebimento, venda, conferência e armazenamento",
+ "Armazenamento, venda, recebimento, conferência e estoque"],c:0,
  e:"O fluxo lógico é: receber, conferir, armazenar, repor e vender — cada etapa alimentando a seguinte."},
-{f:8,p:"Um produto com boa saída e entrega semanal deve ter seu estoque de segurança calculado para:",a:[
- "Evitar ruptura entre uma entrega e outra",
- "Aumentar as perdas por validade",
- "Ocupar todo o depósito",
- "Reduzir as vendas do setor"],c:0,
+{f:8,p:"Produto com boa saída e entrega semanal deve ter estoque de segurança para:",a:[
+ "Evitar a ruptura entre uma entrega e a seguinte",
+ "Aumentar as perdas por validade na prateleira",
+ "Ocupar todo o espaço disponível do depósito",
+ "Reduzir as vendas do setor de mercearia"],c:0,
  e:"O estoque de segurança cobre o consumo durante o intervalo entre entregas, evitando ruptura."},
 {f:8,p:"O indicador de ruptura mede:",a:[
- "A porcentagem de itens que faltaram na prateleira",
- "O lucro total da loja",
- "O número de funcionários por turno",
- "O tempo médio de atendimento no caixa"],c:0,
+ "A porcentagem de itens em falta na prateleira",
+ "O lucro total que a loja obteve no período",
+ "O número de funcionários por turno de trabalho",
+ "O tempo médio de atendimento no caixa da loja"],c:0,
  e:"Ruptura mede a indisponibilidade de itens no ponto de venda — um dos principais indicadores de perda de venda."},
-{f:8,p:"Após um inventário com divergência negativa alta em um setor, a primeira ação é:",a:[
- "Investigar as causas (recebimento, avarias, furtos, cadastro) e corrigir os processos",
- "Ajustar o sistema e não investigar",
- "Responsabilizar a equipe imediatamente",
- "Aumentar os preços dos produtos"],c:0,
+{f:8,p:"Após inventário com divergência negativa alta, a primeira ação é:",a:[
+ "Investigar causas e corrigir os processos da loja",
+ "Ajustar o sistema sem investigar as causas",
+ "Responsabilizar a equipe imediatamente pela falha",
+ "Aumentar os preços dos produtos com divergência"],c:0,
  e:"Divergência negativa alta indica falha de processo: é preciso investigar e corrigir a causa raiz."},
-{f:8,p:"Uma boa organização do depósito com endereçamento contribui para:",a:[
- "Reposição mais rápida, menos erros e melhor controle de estoque",
- "Aumento das perdas por avaria",
- "Redução das vendas",
- "Aumento das divergências"],c:0,
+{f:8,p:"Bom endereçamento no depósito contribui para:",a:[
+ "Reposição rápida, menos erros e controle melhor",
+ "Aumento das perdas por avaria dentro do depósito",
+ "Redução das vendas no setor de mercearia",
+ "Aumento das divergências entre físico e sistema"],c:0,
  e:"Endereçamento reduz tempo de busca, erros de separação e divergências de estoque."},
 {f:8,p:"O abastecimento do PDV depende de:",a:[
- "Apenas do operador de caixa",
- "Integração entre recebimento, estoque, reposição e informação de vendas",
- "Apenas do fornecedor",
- "Apenas do cliente"],c:1,
+ "Apenas do operador que atende o caixa da loja",
+ "Integração entre recebimento, estoque e vendas",
+ "Apenas do fornecedor que faz a entrega",
+ "Apenas do cliente que procura pelo produto"],c:1,
  e:"O PDV abastecido é resultado da integração de vários processos e setores da loja."},
-{f:8,p:"Um produto com alta perda por validade indica que:",a:[
- "O pedido está acima da demanda ou a rotação na prateleira está incorreta",
- "O produto é de má qualidade",
- "O cliente não gosta do produto",
- "O preço está baixo demais"],c:0,
+{f:8,p:"Produto com alta perda por validade indica que:",a:[
+ "O pedido está acima da demanda ou a rotação está errada",
+ "O produto é de baixa qualidade e não vende bem",
+ "O cliente não gosta do produto oferecido na loja",
+ "O preço praticado está baixo demais para o item"],c:0,
  e:"Perda por validade aponta excesso de compra ou falha na rotação (primeiro que vence, primeiro que sai)."},
-{f:8,p:"Ao identificar que o estoque de um item essencial está abaixo do mínimo, o correto é:",a:[
- "Comunicar e providenciar o pedido de reposição de compra o quanto antes",
- "Esperar zerar completamente",
- "Reduzir o preço para vender rápido",
- "Retirar o produto da loja"],c:0,
+{f:8,p:"Estoque de item essencial abaixo do mínimo. O correto é:",a:[
+ "Comunicar e providenciar o pedido de reposição",
+ "Esperar zerar completamente para depois pedir",
+ "Reduzir o preço do produto para vender rápido",
+ "Retirar o produto da loja até nova reposição"],c:0,
  e:"Abaixo do mínimo, o pedido deve ser providenciado de imediato para evitar ruptura."},
-{f:8,p:"A principal consequência da ruptura no ponto de venda é:",a:[
+{f:8,p:"A principal consequência da ruptura no PDV é:",a:[
  "Perda de vendas e insatisfação do cliente",
- "Aumento do lucro da loja",
- "Melhora da imagem da loja",
- "Redução das perdas por validade"],c:0,
+ "Aumento automático do lucro da loja no mês",
+ "Melhora na imagem da loja perante o cliente",
+ "Redução das perdas por validade no período"],c:0,
  e:"Sem produto na prateleira, a loja perde a venda e prejudica a experiência do cliente."},
 {f:8,p:"Um bom operador de abastecimento deve:",a:[
- "Conhecer os produtos, seguir os procedimentos e comunicar problemas rapidamente",
+ "Conhecer produtos, seguir procedimentos e comunicar",
  "Trabalhar isolado, sem comunicar nada à equipe",
  "Fazer apenas o que mandam, sem observar a loja",
  "Deixar os problemas para o próximo turno"],c:0,
  e:"Conhecimento do produto, disciplina de processo e comunicação rápida são a base do bom operador."},
-{f:8,p:"Fechamento do mês com divergências altas em vários setores. A ação mais adequada é:",a:[
- "Ajustar tudo no sistema e seguir",
- "Promover uma força-tarefa com inventário setorial, auditoria de processos e plano de correção",
- "Culpabilizar um setor específico",
- "Aumentar os preços para compensar"],c:1,
+{f:8,p:"Fechamento com divergências altas em vários setores. Ação adequada:",a:[
+ "Ajustar tudo no sistema e seguir em frente",
+ "Promover força-tarefa, auditoria e plano de correção",
+ "Culpabilizar um setor específico pela situação",
+ "Aumentar os preços dos produtos para compensar"],c:1,
  e:"Divergências em vários setores pedem diagnóstico sistêmico, ação coordenada e plano de correção.",
  tipo:"situacional",
  dica:"Problema sistêmico exige resposta sistêmica, não culpabilização."},
-{f:8,p:"Uma auditoria surpresa pede a documentação de recebimentos dos últimos 30 dias. O correto é:",a:[
- "Dizer que não existe documentação",
- "Apresentar notas fiscais, registros de divergências e comprovantes de conferência organizados",
+{f:8,p:"Auditoria surpresa pede documentação de 30 dias. Correto:",a:[
+ "Dizer que não existe documentação disponível",
+ "Apresentar notas, registros e comprovantes organizados",
  "Apresentar apenas as notas dos fornecedores maiores",
- "Pedir prazo e 'produzir' documentos retroativos"],c:1,
+ "Pedir prazo para \"produzir\" documentos retroativos"],c:1,
  e:"Documentação organizada é evidência de processo. Sem ela, a loja fica vulnerável em auditorias.",
  tipo:"situacional",
  dica:"O que não está documentado, não existe em auditoria."},
-{f:8,p:"A gerência estabeleceu meta de reduzir perdas por validade em 30% no próximo trimestre. A melhor ação é:",a:[
- "Reduzir os pedidos de todos os itens",
- "Analisar os itens com maior perda, ajustar pedidos, reforçar rotação e treinar a equipe",
- "Aumentar os preços",
- "Esconder produtos próximos ao vencimento"],c:1,
+{f:8,p:"Meta de reduzir perdas por validade em 30% no trimestre. Melhor ação:",a:[
+ "Reduzir os pedidos de todos os itens da loja",
+ "Analisar itens com maior perda, ajustar e treinar",
+ "Aumentar os preços dos produtos com maior perda",
+ "Esconder produtos próximos do vencimento"],c:1,
  e:"Redução de perdas exige análise de causa, ajuste de compras, rotação correta e capacitação.",
  tipo:"situacional",
  dica:"Meta sem diagnóstico vira 'chute' — comece pelo dado."},
-{f:8,p:"Um novo colaborador precisa ser treinado no setor. A melhor forma é:",a:[
- "Entregar um manual e deixar sozinho",
- "Acompanhar a execução, demonstrar o processo e explicar o porquê de cada etapa",
- "Deixar observando os outros por uma semana",
- "Começar pelos casos mais difíceis"],c:1,
+{f:8,p:"Novo colaborador precisa ser treinado no setor. Melhor forma:",a:[
+ "Entregar um manual e deixar trabalhando sozinho",
+ "Acompanhar a execução e explicar o porquê de cada etapa",
+ "Deixar observando os outros por uma semana inteira",
+ "Começar pelos casos mais difíceis do setor"],c:1,
  e:"Treinamento efetivo combina demonstração, prática acompanhada e explicação do propósito de cada etapa.",
  tipo:"situacional",
  dica:"Quem entende o porquê do processo, executa melhor e corrige quando necessário."},
-{f:8,p:"Um evento promocional vai aumentar muito a demanda de certos itens. Antes do evento, o correto é:",a:[
- "Aguardar e reagir conforme as vendas",
- "Planejar estoque extra, reforçar reposição, alinhar equipe e reforçar conferência de recebimento",
- "Só reforçar o caixa",
- "Reduzir pedidos para não sobrar"],c:1,
+{f:8,p:"Evento promocional vai aumentar muito a demanda. Antes do evento, correto:",a:[
+ "Aguardar e reagir conforme as vendas do evento",
+ "Planejar estoque extra, reforçar reposição e equipe",
+ "Reforçar apenas o número de operadores no caixa",
+ "Reduzir pedidos para não sobrar mercadoria"],c:1,
  e:"Picos de demanda exigem planejamento integrado: compra, recebimento, armazenamento e reposição preparados.",
  tipo:"situacional",
  dica:"Evento promocional é teste de integração do abastecimento."}
@@ -1351,6 +1313,11 @@ function downloadFile(content, filename, mime){
 }
 function genResultId(){
   return "resultado_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
+}
+function isTypingTarget(el){
+  if (!el) return false;
+  const tag = (el.tagName || "").toLowerCase();
+  return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
 }
 
 /* ================================================================
@@ -1660,6 +1627,7 @@ const KEYMAP = { ArrowUp:"up", ArrowDown:"down", ArrowLeft:"left", ArrowRight:"r
   w:"up", s:"down", a:"left", d:"right", W:"up", S:"down", A:"left", D:"right" };
 
 window.addEventListener("keydown", e=>{
+  if (isTypingTarget(e.target)) return;
   Sound.init(); Sound.resume();
   const k = e.key;
   if (KEYMAP[k]){ input[KEYMAP[k]] = true; e.preventDefault(); }
@@ -1671,10 +1639,12 @@ window.addEventListener("keydown", e=>{
   }
 });
 window.addEventListener("keyup", e=>{
+  if (isTypingTarget(e.target)) return;
   const k = e.key;
   if (KEYMAP[k]){ input[KEYMAP[k]] = false; e.preventDefault(); }
   if (k === " " || k === "Spacebar"){ input.fire = false; e.preventDefault(); }
 });
+
 canvas.addEventListener("mousedown", e=>{ Sound.init(); Sound.resume(); if (game.state==="playing") input.fire = true; });
 window.addEventListener("mouseup", ()=>{ input.fire = false; });
 canvas.addEventListener("contextmenu", e=> e.preventDefault());
@@ -2686,6 +2656,7 @@ document.getElementById("mJogar").addEventListener("click", ()=>{
   document.getElementById("inpNome").value = prof.nome || "";
   document.getElementById("inpTurma").value = prof.turma || "";
   showScreen("scProfile");
+  setTimeout(()=> document.getElementById("inpNome").focus(), 60);
 });
 document.getElementById("mContinuar").addEventListener("click", ()=>{
   const prof = Store.getProfile();
@@ -2916,22 +2887,17 @@ async function loadRanking(force){
   const now = Date.now();
   const cache = Store.getRankCache();
   if (!force && cache.results && (now - cache.at) < CONFIG.CACHE_TTL_MS){
-    rankResults = cache.results;
-    rankLastFetch = cache.at;
-    renderRankingTable();
-    return;
+    rankResults = cache.results; rankLastFetch = cache.at; renderRankingTable(); return;
   }
   if (!JSONBinAPI.configured()){
-    rankResults = [];
-    renderRankingTable();
+    rankResults = []; renderRankingTable();
     document.getElementById("rankStatus").textContent = "⚠ JSONBin não configurado.";
     return;
   }
   document.getElementById("rankStatus").textContent = "🔄 Carregando ranking…";
   try {
     const data = await JSONBinAPI.loadResults();
-    rankResults = data.results;
-    rankLastFetch = Date.now();
+    rankResults = data.results; rankLastFetch = Date.now();
     Store.setRankCache({ at: rankLastFetch, results: rankResults });
     Sync.updateIndicator(Store.getPending().length ? "pending" : "online");
     renderRankingTable();
@@ -2939,17 +2905,14 @@ async function loadRanking(force){
   } catch(e){
     Sync.updateIndicator("offline");
     if (cache.results && cache.results.length){
-      rankResults = cache.results;
-      renderRankingTable();
+      rankResults = cache.results; renderRankingTable();
       document.getElementById("rankStatus").textContent = "⚠ Falha ao consultar JSONBin — exibindo último cache.";
     } else {
       document.getElementById("rankStatus").textContent = "⚠ Não foi possível carregar o ranking. Verifique a conexão.";
-      rankResults = [];
-      renderRankingTable();
+      rankResults = []; renderRankingTable();
     }
   }
 }
-
 function filterRank(){
   const t = document.getElementById("rankTurma").value;
   const p = document.getElementById("rankPeriodo").value;
@@ -2967,7 +2930,6 @@ function filterRank(){
   let list = rankResults.filter(r => (r && r.date) && inPeriod(r.date));
   if (t) list = list.filter(r => String(r.className||"") === t);
   if (f) list = list.filter(r => (r.phaseResults||[]).some(ph => String(ph.phase) === f));
-
   list.sort((a,b)=>{
     if (ord === "score") return (b.score||0) - (a.score||0);
     if (ord === "phases") return (b.phasesCompleted||0) - (a.phasesCompleted||0);
@@ -2978,7 +2940,6 @@ function filterRank(){
   });
   return list;
 }
-
 function refreshRankTurmas(){
   const sel = document.getElementById("rankTurma");
   const cur = sel.value;
@@ -2986,7 +2947,6 @@ function refreshRankTurmas(){
   sel.innerHTML = '<option value="">Todas</option>' + turmas.map(t => `<option>${escapeHtml(t)}</option>`).join("");
   sel.value = cur;
 }
-
 function renderRankingTable(){
   refreshRankTurmas();
   const list = filterRank();
@@ -3014,7 +2974,6 @@ function renderRankingTable(){
     </tr>`;
   }).join("");
 }
-
 document.getElementById("rankOrdem").addEventListener("change", renderRankingTable);
 document.getElementById("rankTurma").addEventListener("change", renderRankingTable);
 document.getElementById("rankPeriodo").addEventListener("change", renderRankingTable);
@@ -3026,11 +2985,7 @@ document.getElementById("rankMeu").addEventListener("click", ()=>{
   else alert("Nenhum resultado seu encontrado no ranking atual. Jogue uma partida para aparecer!");
 });
 document.getElementById("rankVoltar").addEventListener("click", ()=> showScreen("scMenu"));
-
-async function openRanking(){
-  showScreen("scRanking");
-  await loadRanking(false);
-}
+async function openRanking(){ showScreen("scRanking"); await loadRanking(false); }
 
 /* ================================================================
    20) MODO PROFESSOR
@@ -3039,10 +2994,7 @@ let profResults = [];
 let profTab = "visao";
 let profSort = { key:"mediaAcc", dir:-1 };
 
-async function openProfessor(){
-  showScreen("scProfessor");
-  await loadProfessorData();
-}
+async function openProfessor(){ showScreen("scProfessor"); await loadProfessorData(); }
 
 async function loadProfessorData(){
   document.getElementById("profBody").innerHTML = "<p class='hint'>Carregando dados…</p>";
@@ -3053,14 +3005,12 @@ async function loadProfessorData(){
       const pending = Store.getPending();
       pending.forEach(p => { if (!profResults.some(r => r.id === p.id)) profResults.push(p); });
     } catch(e){
-      profResults = [];
-      const locals = Store.getResults().map(r => ({
+      profResults = Store.getResults().map(r => ({
         id: r.id || genResultId(), studentName: r.nome, className: r.turma, date: r.data,
         score: r.pontuacao, accuracy: r.percentual, phasesCompleted: r.fasesConcluidas,
         maxCombo: r.maiorCombo, timeSeconds: r.tempo, classification: r.classificacao,
         phaseResults:[], errors:[], _local:true
       }));
-      profResults = locals;
     }
   } else {
     profResults = Store.getResults().map(r => ({
@@ -3075,7 +3025,6 @@ async function loadProfessorData(){
   refreshProfTurmas();
   renderProfessor();
 }
-
 function refreshProfTurmas(){
   const sel = document.getElementById("profTurma");
   const cur = sel.value;
@@ -3083,7 +3032,6 @@ function refreshProfTurmas(){
   sel.innerHTML = '<option value="">Todas</option>' + turmas.map(t => `<option>${escapeHtml(t)}</option>`).join("");
   sel.value = cur;
 }
-
 function filterProf(){
   const t = document.getElementById("profTurma").value;
   const p = document.getElementById("profPeriodo").value;
@@ -3102,7 +3050,6 @@ function filterProf(){
   if (f) list = list.filter(r => (r.phaseResults||[]).some(ph => String(ph.phase) === f));
   return list;
 }
-
 function renderProfessor(){
   const list = filterProf();
   const body = document.getElementById("profBody");
@@ -3123,7 +3070,6 @@ function renderProfessor(){
     if (avg > melhorFasePct){ melhorFasePct = avg; melhorFase = "F" + i + " — " + PHASES[i-1].nome; }
     if (avg < piorFasePct){ piorFasePct = avg; piorFase = "F" + i + " — " + PHASES[i-1].nome; }
   }
-
   const errCount = {};
   list.forEach(r => (r.errors||[]).forEach(e => {
     const c = e.content || ("F" + (e.phase||"?")); errCount[c] = (errCount[c]||0) + 1;
@@ -3153,9 +3099,7 @@ function renderProfessor(){
     a.maxCombo = Math.max(a.maxCombo, r.maxCombo||0);
     if (!a.lastDate || new Date(r.date) > new Date(a.lastDate)){ a.lastDate = r.date; a.classif = r.classification || "-"; }
   });
-  let alunos = Object.values(alunosMap).map(a => ({
-    ...a, mediaAcc: a.partidas ? Math.round(a.sumAcc/a.partidas) : 0
-  }));
+  let alunos = Object.values(alunosMap).map(a => ({ ...a, mediaAcc: a.partidas ? Math.round(a.sumAcc/a.partidas) : 0 }));
   const dir = profSort.dir;
   alunos.sort((a,b)=>{
     const k = profSort.key;
@@ -3168,12 +3112,9 @@ function renderProfessor(){
     <div class="tablewrap">
       <table>
         <thead><tr>
-          <th data-k="nome">Aluno</th>
-          <th data-k="turma">Turma</th>
-          <th data-k="mediaAcc">Média %</th>
-          <th data-k="maxPhases">Fases</th>
-          <th data-k="score">Pontuação</th>
-          <th data-k="partidas">Partidas</th>
+          <th data-k="nome">Aluno</th><th data-k="turma">Turma</th>
+          <th data-k="mediaAcc">Média %</th><th data-k="maxPhases">Fases</th>
+          <th data-k="score">Pontuação</th><th data-k="partidas">Partidas</th>
           <th data-k="classif">Classificação</th>
         </tr></thead>
         <tbody>${alunos.length ? alunos.map(a=>`
@@ -3198,9 +3139,7 @@ function renderProfessor(){
     turmasMap[t].sumAcc += r.accuracy||0;
     turmasMap[t].alunos.add(r.studentName);
   });
-  const turmas = Object.values(turmasMap).map(t => ({
-    ...t, media: t.partidas ? Math.round(t.sumAcc/t.partidas) : 0, alunos: t.alunos.size
-  })).sort((a,b)=> b.media - a.media);
+  const turmas = Object.values(turmasMap).map(t => ({ ...t, media: t.partidas ? Math.round(t.sumAcc/t.partidas) : 0, alunos: t.alunos.size })).sort((a,b)=> b.media - a.media);
   const turmasHTML = `
     <div class="tablewrap">
       <table>
@@ -3224,9 +3163,7 @@ function renderProfessor(){
     conteudoStats[nome].sum += ph.accuracy||0;
     conteudoStats[nome].count++;
   }));
-  const conteudos = Object.entries(conteudoStats).map(([nome, s]) => ({
-    nome, media: s.count ? Math.round(s.sum / s.count) : 0, count: s.count
-  }));
+  const conteudos = Object.entries(conteudoStats).map(([nome, s]) => ({ nome, media: s.count ? Math.round(s.sum / s.count) : 0, count: s.count }));
   const conteudosDif = conteudos.slice().sort((a,b)=> a.media - b.media).slice(0,5);
   const conteudosBom = conteudos.slice().sort((a,b)=> b.media - a.media).slice(0,5);
 
@@ -3257,7 +3194,6 @@ function renderProfessor(){
     });
   });
 }
-
 document.querySelectorAll("#profTabs .tab").forEach(t => {
   t.addEventListener("click", ()=>{
     document.querySelectorAll("#profTabs .tab").forEach(x => x.classList.remove("active"));
